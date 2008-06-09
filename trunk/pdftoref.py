@@ -13,7 +13,7 @@ import sys
 
 def main():
     '''
-    The main fucntion of the app
+    The main fucntion of the application
     '''
    
     (content,flag) =  parser.parse(sys.argv)
@@ -24,19 +24,31 @@ def main():
     elif flag == 'file':
         #si estrae i file
         print "si estrae i dati dal file " + content
-        text = HtmlToText.converseToText(content)
-        clearText = HtmlToText.removeSpace(text,content,br=False)
-        entries = Extractor.entriesExtractor(clearText)
-        if entries:
-            titles = Extractor.titleExtractor(entries)
-            print entries
-            if titles:
-                print titles
-                HtmlWriter.write(entries,titles,content)
+        do(content)
+
          
     elif flag == 'dir':
          #si estrae la dir
         print "si estrae i dati dai files delle dir " + content
+        
+        if content[len(content)-1:]<> "/":
+                       content+="/"
+        
+        pdfFiles = parser.listPdfFiles(content)
+        for each in pdfFiles:
+            do(content+each)
+
+
+def do(content):
+    text = HtmlToText.converseToText(content)
+    clearText = HtmlToText.removeSpace(text,content,br=False)
+    entries = Extractor.entriesExtractor(clearText)
+    if entries:
+        titles = Extractor.titleExtractor(entries)
+        print entries
+        if titles:
+            print titles
+            HtmlWriter.write(entries,titles,content)
         
     
     
