@@ -41,7 +41,7 @@ def main():
 
 def do(content):
     text = HtmlToText.converseToText(content)
-    clearText = HtmlToText.removeSpace(text,content,br=False)
+    clearText = HtmlToText.addSpace(text,content,br=False)
     entries = Extractor.entriesExtractor(clearText)
     if entries:
         titles = Extractor.titleExtractor(entries)
