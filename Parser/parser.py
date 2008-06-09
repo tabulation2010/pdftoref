@@ -6,7 +6,7 @@ def parse(argv):
     flag= 'None'
     
     try:
-        opts, args = getopt.getopt(argv[1:], "hf:d", ["help","file=","dir="])
+        opts, args = getopt.getopt(argv[1:], "hf:d:", ["help","file=","dir="])
     except getopt.GetoptError, err:
          return (content,flag)
 
@@ -30,3 +30,14 @@ def usage():
     -h                   or   --help                      This help Commands \n \
     -f <path/to/file>    or   --file=<path/to/file>       Run PdfToRef recursively onto the PDF content in the dir \n \
     -d </path/to/dir>    or   --dir=</path/to/dir>        Run PdfToRef onto the PDF content in the file specified path    "
+    
+    
+def listPdfFiles(dir):
+    import os
+    files = os.listdir(dir)
+    pdfFiles = []
+    for each in files:
+        if each[len(each)-4:] == ".pdf":
+            pdfFiles.append(each)
+    return pdfFiles
+        
