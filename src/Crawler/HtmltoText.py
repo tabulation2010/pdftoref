@@ -70,7 +70,7 @@ def execPdfToHtml(filepath):
 def clearFromHtml(stringa):
     return stringa.replace('<br>','').replace('<b>','').replace('</b>','').replace('<i>','').replace('</i>','').replace('&amp;','&').replace('</BODY>','').replace('</HTML>','')
     
-def removeSpace(text,filepath,br=False):
+def addSpace(text,filepath,br=False):
     '''
     This function remove spaces from text.
     
