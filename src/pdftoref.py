@@ -6,7 +6,7 @@
 
 
 import Parser.parser as parser
-import Crawler.HtmltoText as HtmlToText
+import Crawler.PdfToText as PdfToText
 import Crawler.Extractor as Extractor
 import HtmlWriter
 import sys
@@ -40,15 +40,28 @@ def main():
 
 
 def do(content):
-    text = HtmlToText.converseToText(content)
-    clearText = HtmlToText.addSpace(text,content,br=False)
-    entries = Extractor.entriesExtractor(clearText)
-    if entries:
-        titles = Extractor.titleExtractor(entries)
-        print entries
-        if titles:
-            print titles
-            HtmlWriter.write(entries,titles,content)
+    '''
+    this function fuction works with the pyPdf lib
+    '''
+    (text,nPages) = PdfToText.convertToText(content)
+    text = unicode(text,'utf8')
+    print text
+    
+    print "\n ************ TESTO SPAZIALE *********\n"
+    '''
+    this function take the exctracted text, see if it has spaces between the
+    words and if there are not  put them into 
+    '''
+    clearText = PdfToText.addSpaces(text,content,nPages)
+    print clearText
+    
+#    entries = Extractor.entriesExtractor(clearText)
+#    if entries:
+#        titles = Extractor.titleExtractor(entries)
+#        print entries
+#        if titles:
+#            print titles
+#            HtmlWriter.write(entries,titles,content)
         
     
     
