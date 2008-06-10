@@ -7,9 +7,14 @@ import codecs
 _references = "References"
 
 
-def converseToText(filename):
 
-    _text = " "
+def convertToText(filename):
+    '''
+    This function return the Reference plain text from a pdf using 
+    pyPdf Lib
+    '''
+    
+    text = " "
     
     try:
         input = pyPdf.PdfFileReader(file(filename,"rb"))
@@ -22,21 +27,52 @@ def converseToText(filename):
     
     for i in range(n):
         try:
-            _text += input.getPage(i).extractText()
+            text += input.getPage(i).extractText()
         
         except pyPdf.utils.PdfReadError:
             print "Probably a PDF done with images"
             import sys
             sys.exit(2)
-    
+    #text = unicode(text,'utf8')        
+    text = getTextReferences(text,n,0)
+    return (text,n)
+
+def getTextReferences(text, numPages, offSet):
     #TODO: Insert if in cascade to take some other case like "References" or "Bibliography"
-    index = _text.rfind(_references)
-    _text = _text[index:]
+    #text = text.encode('ascii','ignore')
+    nChars4Page = len(text)/numPages
+    offSet = int(nChars4Page * offSet)
     
-    _text = _text[len(_references):]
-    _text = _text.encode('ascii','ignore')
+    index = text.rfind(_references)
+    text = text[index-offSet:]
+    #text = text[len(_references):]
     
-    return _text
+    
+    return text
+
+def execPdfToText(filepath):
+        #FIXME: This is a fix because the pdfhtml does not open the file
+        
+        #FIXME: try to search a better smart way to execute pdf to html
+        filepathCorrect = filepath.replace(" ","\ ")
+        
+        execResult = os.popen("pdftotext "+filepathCorrect, "r")
+        if execResult.readline() == "":
+            time.sleep(1)
+            
+            fileNameTxt = filepath[:len(filepath)-4]+".txt"
+            
+            fileTxt = open(fileNameTxt,"r").read()
+            
+            fileNameTxt = fileNameTxt.replace(" ","\ ")
+            
+            if os.popen("rm "+fileNameTxt, "r").readline() <> "":
+                return (fileTxt,False)
+            else:
+                return (fileTxt,True)
+        else:
+            return ("", False)
+    
 
 def execPdfToHtml(filepath):
         
@@ -69,12 +105,49 @@ def execPdfToHtml(filepath):
 
 def clearFromHtml(stringa):
     return stringa.replace('<br>','').replace('<b>','').replace('</b>','').replace('<i>','').replace('</i>','').replace('&amp;','&').replace('</BODY>','').replace('</HTML>','')
-    
-def addSpace(text,filepath,br=False):
+
+def addSpaces(originalText,filepath,nPages):
     '''
-    This function remove spaces from text.
+    This function add space to a text
+    '''
     
-    @author: iacopo
+    numOfSpaces = originalText.count(" ")
+    if numOfSpaces > 0:
+        return originalText
+    else:
+        print "A block Text without spaces. Need pdfToText"
+        (withSpaceText,result) =  execPdfToText(filepath)
+        withSpaceText = unicode(withSpaceText,'utf8')
+        if result:
+            withSpaceText = getTextReferences(withSpaceText,nPages,0.5)
+            withSpaceText = withSpaceText.replace("\n"," ")
+            withSpaceWordsList = withSpaceText.split(" ")
+            for i in range(len(withSpaceWordsList)):
+                withSpaceWordsList[i] = (withSpaceWordsList[i],False)
+                
+            k = 0
+            clearText = ""
+            while k < len(originalText):
+                for i in range(len(withSpaceWordsList)):
+                    index = originalText.find(withSpaceWordsList[i][0])
+                    
+                    if index <> -1 and withSpaceWordsList[i][1] <> True:
+                       clearText += " "+originalText[:index+len(withSpaceWordsList[i][0])]
+                       withSpaceWordsList[i][1] = True
+                       k = k + len(withSpaceWordsList[i][0])
+                        
+        else:
+            print "Error nell' eseguire pdftotext"
+            return ""
+    return clearText    
+    
+    
+def addSpaceHtml(text,filepath,br=False):
+    '''
+    This function add spaces from text.
+    
+    @author: marto
+    
     '''
 
     numOfSpace = text.count(' ')
@@ -83,8 +156,9 @@ def addSpace(text,filepath,br=False):
     if numOfSpace > 0:
         return text
     else:
-        print "A block of United Test. Need pdftohtml"
-        (html, done) = execPdfToHtml(filepath)
+        print "A block Text without spaces. Need pdfToText"
+        (textWithSpace, done) = execPdfToHtml(filepath)
+        
         '''If the pdfhtml command is ok '''
         if done:
             '''If I do not want to print html '''
