@@ -2,6 +2,7 @@ import pyPdf
 import time
 import os
 import codecs
+import re
 
 
 _references = "References"
@@ -33,13 +34,15 @@ def convertToText(filename):
             print "Probably a PDF done with images"
             import sys
             sys.exit(2)
-    #text = unicode(text,'utf8')        
+    #text = unicode(text,'utf8')
+    text = text.encode('ascii','ignore')
+    text = text.decode('ascii','ignore')
     text = getTextReferences(text,n,0)
     return (text,n)
 
 def getTextReferences(text, numPages, offSet):
     #TODO: Insert if in cascade to take some other case like "References" or "Bibliography"
-    #text = text.encode('ascii','ignore')
+    #text = text.encode('utf8','ignore')
     nChars4Page = len(text)/numPages
     offSet = int(nChars4Page * offSet)
     
@@ -106,6 +109,26 @@ def execPdfToHtml(filepath):
 def clearFromHtml(stringa):
     return stringa.replace('<br>','').replace('<b>','').replace('</b>','').replace('<i>','').replace('</i>','').replace('&amp;','&').replace('</BODY>','').replace('</HTML>','')
 
+
+def compareString(s1,s2):
+    a = 0
+    if len(s1) > len(s2):
+        a = 1
+    if len(s1) < len(s2):
+        a= -1
+    if len(s1) == len(s2):
+        a = 0
+    return a
+
+
+def escapeMetachar(stringa):
+    stringa = stringa.replace('\\', '\\\\').replace('.','\.').replace('^','\^').replace('$','\$').replace('*','\*')
+    stringa = stringa.replace('+','\+').replace('?','\?').replace('{','\{').replace('}','\}')
+    stringa = stringa.replace('[','\[').replace(']','\]')
+    stringa = stringa.replace('|','\|').replace('(','\(').replace(')','\)').replace("\x0c","\\n")
+    return stringa
+
+
 def addSpaces(originalText,filepath,nPages):
     '''
     This function add space to a text
@@ -117,30 +140,55 @@ def addSpaces(originalText,filepath,nPages):
     else:
         print "A block Text without spaces. Need pdfToText"
         (withSpaceText,result) =  execPdfToText(filepath)
-        withSpaceText = unicode(withSpaceText,'utf8')
+        withSpaceText = withSpaceText.decode('ascii','ignore')
+        #withSpaceText = withSpaceText.encode('ascii','ignore')
         if result:
             withSpaceText = getTextReferences(withSpaceText,nPages,0.5)
             withSpaceText = withSpaceText.replace("\n"," ")
             withSpaceWordsList = withSpaceText.split(" ")
+            
+            #withSpaceWordsList.sort()
+            withSpaceWordsList.sort(compareString)
+            withSpaceWordsList.reverse()
+            
             for i in range(len(withSpaceWordsList)):
-                withSpaceWordsList[i] = (withSpaceWordsList[i],False)
+                tmpList = []
+                tmpList.append(escapeMetachar(withSpaceWordsList[i]))
+                tmpList.append(False)
+                withSpaceWordsList[i] = tmpList
                 
             k = 0
             clearText = ""
+            
+            print originalText[355:]
             while k < len(originalText):
                 for i in range(len(withSpaceWordsList)):
-                    index = originalText.find(withSpaceWordsList[i][0])
-                    
-                    if index <> -1 and withSpaceWordsList[i][1] <> True:
-                       clearText += " "+originalText[:index+len(withSpaceWordsList[i][0])]
-                       withSpaceWordsList[i][1] = True
-                       k = k + len(withSpaceWordsList[i][0])
+                    eachWord = withSpaceWordsList[i]
+                    #index = originalText.find(withSpaceWordsList[i][0])
+                    if eachWord[0] == "Coasnon\\." and k==355:
+                        pass
+                    r = re.compile(eachWord[0])
+                    match = r.match(originalText,k)
+                    if match and eachWord[1] <> True :
+                        (start,end) = match.span()
+                        clearText+=" "+originalText[start:][:end]
+                        eachWord[1] = True
+                        k=end
+                        break
+                print k
+#                    if index <> -1 and withSpaceWordsList[i][1] <> True:
+#                       clearText += " "+originalText[:index+len(withSpaceWordsList[i][0])]
+#                       withSpaceWordsList[i][1] = True
+#                       k = k + len(withSpaceWordsList[i][0])
                         
         else:
             print "Error nell' eseguire pdftotext"
             return ""
     return clearText    
     
+    
+    
+
     
 def addSpaceHtml(text,filepath,br=False):
     '''
