@@ -44,7 +44,7 @@ def do(content):
     this function fuction works with the pyPdf lib
     '''
     (text,nPages) = PdfToText.convertToText(content)
-    text = unicode(text,'utf8')
+    #text = unicode(text,'utf8')
     print text
     
     print "\n ************ TESTO SPAZIALE *********\n"
