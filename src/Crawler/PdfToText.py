@@ -3,11 +3,22 @@ import time
 import os
 import codecs
 import re
+import Pdfminer.pdfTotext as Pdf2Txt
 
+_references = " ?R ?e ?f ?e ?r ?e ?n ?c ?e ?s? ?"
 
-_references = "References"
-
-
+def getText(filepath):
+    text = Pdf2Txt.getTextFromPdf(filepath)
+    
+    r = re.compile(_references)
+    listaRef = r.findall(text)
+    if len(listaRef) == 0:
+        return None
+    else:
+        lastRef = listaRef[ len(listaRef) - 1 ]
+        index = text.rfind(lastRef)
+        text = text[index+len(lastRef):]
+        return text
 
 def convertToText(filename):
     '''
@@ -153,7 +164,8 @@ def addSpaces(originalText,filepath,nPages):
             
             for i in range(len(withSpaceWordsList)):
                 tmpList = []
-                tmpList.append(escapeMetachar(withSpaceWordsList[i]))
+                #tmpList.append(escapeMetachar(withSpaceWordsList[i]))
+                tmpList.append(withSpaceWordsList[i])
                 tmpList.append(False)
                 withSpaceWordsList[i] = tmpList
                 
@@ -169,6 +181,7 @@ def addSpaces(originalText,filepath,nPages):
                         pass
                     r = re.compile(eachWord[0])
                     match = r.match(originalText,k)
+
                     if match and eachWord[1] <> True :
                         (start,end) = match.span()
                         clearText+=" "+originalText[start:][:end]
