@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>PDFMiner</title>
+<style type="text/css"><!--
+blockquote { background: #eeeeee; }
+--></style>
+</head><body>
+
+<h1>PDFMiner</h1>
+<div align=right class=lastmod>
+<!-- hhmts start -->
+Last Modified: Wed Apr 30 19:15:12 JST 2008
+<!-- hhmts end -->
+</div>
+
+<a name="intro"></a>
+<hr noshade>
+<h2>What's It?</h2>
+<p>
+PDFMiner is a suite of programs that aims to help
+extracting or analyzing text data from PDF documents.
+Unlike other PDF-related tools, it allows to obtain
+the exact location of texts in a page, as well as 
+other layout information such as font size or font name,
+which could be useful for analyzing the document.
+It can be also used as a basis for a full-fledged PDF interpreter.
+<p>
+<strong>Features:</strong>
+<ul>
+<li> Written entirely in Python. 
+<li> Roughly supports up to PDF-1.7 specification.
+<li> Supports non-ASCII languages and vertical writing scripts.
+<li> Supports various font types (Type1, TrueType, Type3, and CID).
+<li> Supports basic encryption (RC4).
+</ul>
+
+<p>
+<strong>Homepage:</strong><br>
+<a href="http://www.unixuser.org/~euske/python/pdfminer/index.html">
+http://www.unixuser.org/~euske/python/pdfminer/index.html
+</a>
+
+<a name="source"></a>
+<p>
+<strong>Download (source):</strong><br>
+<a href="http://www.unixuser.org/~euske/python/pdfminer/pdfminer-dist-20080429.tar.gz">
+http://www.unixuser.org/~euske/python/pdfminer/pdfminer-dist-20080429.tar.gz
+</a>
+(1.8Mbytes)
+
+<P>
+<strong>Svn repository:</strong><br>
+<a href="http://pdfminerr.googlecode.com/svn/">
+http://pdfminerr.googlecode.com/svn/
+</a>
+
+<a name="install"></a>
+<hr noshade>
+<h2>How to Install</h2>
+<ol>
+<li> Install <a href="http://www.python.org/download/">Python</a> 2.4 or newer.
+<li> Download the <a href="#source">PDFMiner source</a>.
+<li> Extract it.
+<li> Go to the <code>pdfminer</code> directory.
+<li> Do the following test:<br>
+<blockquote><pre>
+$ <strong>python pdf2txt.py samples/simple1.pdf</strong>
+&lt;document&gt;
+&lt;page id="0" bbox="0,0,612,792" rotate="0"&gt;
+&lt;text x="100.000" y="100.000" font="Helvetica" size="24.000" width="137.352"&gt; Hello World &lt;/text&gt;
+&lt;/page&gt;
+&lt;/document&gt;
+</pre></blockquote>
+<li> Done!
+</ol>
+
+<p>
+<h3>For non-ASCII languages</h3>
+In order to handle non-ASCII languages (e.g. Japanese),
+you need to install an additional data called <code>CMap</code>.
+<p>
+Here is how:
+
+<ol>
+<li> Get 
+<a href="http://www.unixuser.org/~euske/pub/CMap.tar.bz2">
+http://www.unixuser.org/~euske/pub/CMap.tar.bz2
+</a>
+<li> Do the follwoing:
+<blockquote><pre>
+$ <strong>tar jxf CMap.tar.bz2</strong>
+</pre></blockquote>
+<li> Put the <code>CMap</code> directory into the <code>pdfminer</code> directory.
+<li> Go to the <code>pdfminer</code> directory.
+<li> Do the follwoing: (this is optional but highly recommended)<br>
+<blockquote><pre>
+$ <strong>make cdbcmap</strong>
+</pre></blockquote>
+</ol>
+
+<a name="usage"></a>
+<hr noshade>
+<h2>How to Use</h2>
+
+<p>
+PDFMiner comes with two programs:
+<code>pdf2txt.py</code> and <code>dumppdf.py</code>.
+
+<a name="pdf2txt"></a>
+<h3>pdf2txt.py</h3>
+<p>
+<code>pdf2txt.py</code> extracts text contents from a PDF file.
+It extracts all the texts that are to be rendered programatically.
+It also extracts the corresponding locations, font names,
+and font sizes for each text portion in an SGML-like format.
+It cannot extract texts embedded within images
+(i.e. it does not do optical character recognition).
+You can provide a password for protected PDF documents 
+whose access is limited.
+<p>
+For non-ASCII languages, you can speficy the output encoding 
+(such as UTF-8).
+Note that not all characters in a PDF can be converted safely
+to Unicode, as some of them are not included in the current
+Unicode Standard.
+
+<p>
+Examples:
+<blockquote><pre>
+$ <strong>./pdf2txt.py samples/naacl06-shinyama.pdf</strong>
+
+$ <strong>./pdf2txt.py -c euc-jp samples/jo.pdf</strong>
+(extract Japanese texts in vertical writing, CMap is required)
+
+$ <strong>./pdf2txt.py -P mypassword secret.pdf</strong>
+(extract texts from an encrypted PDF file with a password)
+</pre></blockquote>
+
+<p>
+Options:
+<dl>
+<dt> <code>-o <em>filename</em></code> 
+<dd> Speficies the output file name.
+By default, it prints the extracted contents to stdout.
+<p>
+<dt> <code>-p <em>pageno</em></code> 
+<dd> Speficies the page number to be extracted. 
+Note that page numbers start from zero.
+Multiple <code>-p</code> options are allowed.
+By default, it extracts texts from all the pages.
+<p>
+<dt> <code>-c <em>codec</em></code> 
+<dd> Speficies the output codec for non-ASCII texts.
+<p>
+<dt> <code>-P <em>password</em></code> 
+<dd> Provides the user password to open the PDF file.
+<p>
+<dt> <code>-d</code> 
+<dd> Increases the debug level.
+</dl>
+
+<a name="dumppdf"></a>
+<h3>dumppdf.py</h3>
+<p>
+<code>dumppdf.py</code> dumps the internal contents of a PDF file
+in pseudo-XML format. This program is primarily for debugging purpose,
+but it's also possible to extract some meaningful contents
+(such as images).
+
+<p>
+Examples:
+<blockquote><pre>
+$ <strong>./dumppdf.py -a foo.pdf</strong>
+(dump all the headers and contents, except stream objects)
+
+$ <strong>./dumppdf.py -r -i6 foo.pdf &gt; pic.jpeg</strong>
+(extract a JPEG image)
+</pre></blockquote>
+
+<p>
+Options:
+<dl>
+<dt> <code>-a</code> 
+<dd> Instructs to dump all the objects.
+By default, it only prints the document trailer (like a header).
+<p>
+<dt> <code>-p <em>pageno</em></code> 
+<dd> Speficies the page number to be extracted. 
+Multiple <code>-p</code> options are allowed.
+Note that page numbers start from zero.
+<p>
+<dt> <code>-r</code> (raw)
+<dt> <code>-b</code> (binary)
+<dt> <code>-t</code> (text)
+<dd> Speficies the output format of stream contents.
+Because the contents of stream objects can be very large,
+they are omitted when none of the options above is specified.
+<p>
+With <code>-r</code> option, all the stream contents are dumped without decoding. 
+With <code>-b</code> option, the contents are dumped as a binary blob.
+With <code>-t</code> option, the contents are dumped in a text format,
+similar to <code>repr()</code> manner. When 
+<code>-r</code> or <code>-b</code> option is given, 
+no stream header is displayed for the ease of saving it to a file.
+<p>
+<dt> <code>-P <em>password</em></code> 
+<dd> Provides the user password to open the PDF file.
+<p>
+<dt> <code>-d</code> 
+<dd> Increases the debug level.
+</dl>
+
+<a name="changes"></a>
+<hr noshade>
+<h2>Changes</h2>
+<ul>
+<li> 2007/04/29: Bugfix for Win32. Thanks to Chris Clark.
+<li> 2007/04/27: Basic encryption and LZW decoding support added.
+<li> 2007/01/07: Several bugfixes. Thanks to Nick Fabry for his contribution.
+<li> 2007/12/31: Initial release.
+<li> 2004/12/24: Start writing the code out of boredom...
+</ul>
+
+<a name="related"></a>
+<hr noshade>
+<h2>Related Projects</h2>
+<ul>
+<li> <a href="http://pybrary.net/pyPdf/">pyPdf</a>
+<li> <a href="http://www.foolabs.com/xpdf/">xpdf</a>
+<li> <a href="http://www.pdfbox.org/">pdfbox</a>
+</ul>
+
+<a name="license"></a>
+<hr noshade>
+<h2>Terms and Conditions</h2>
+<p>
+<small>
+Copyright (c) 2004-2008  Yusuke Shinyama &lt;yusuke at cs dot nyu dot edu&gt;
+<p>
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+<p>
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+<p>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</small>
+
+<hr noshade>
+<address>Yusuke Shinyama</address>
+</body>

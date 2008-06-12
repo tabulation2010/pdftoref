@@ -27,7 +27,7 @@ def write(entries,titles,path):
 
         
         index = entry.find(title)
-        printEntry = entry[:index]+ "<a style=\"background-color:#ffff73\" href=\""+url+"\"><b>"+title+"</a></b>" + entry[index:]
+        printEntry = entry[:index]+ "<a style=\"background-color:#ffff73\" href=\""+url+"\"><b>"+title+"</a></b>" + entry[index+len(title):]
         
         output.write("<li>"+ printEntry + "</li>")
         
