@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright 2008 Iacopo Masi, Nicola Martorana
+# Copyright 2008 Iacopo Masi <iacopo.masi@gmail.com>, Nicola Martorana <martorana.nicola@gmail.com>
 # See http://epydoc.sourceforge.net/epytext.html on how document
 
 
@@ -13,7 +13,10 @@ import sys
 
 def main():
     '''
-    The main fucntion of the application
+    B{The main function of the application} U{http://code.google.com/p/pdftoref/}
+    Here is done first the parsing of the command line to get if parse a pdf file
+    or a set of pdf files in a directory. When the parsing of the pdf is done and 
+    the exctractor finishe, it writes the result into an html file. 
     '''
    
     (content,flag) =  parser.parse(sys.argv)
@@ -22,55 +25,78 @@ def main():
         sys.exit(2)
         
     elif flag == 'file':
-        #si estrae i file
-        print "si estrae i dati dal file " + content
+        print("PdftoRef> Extracting data from file: "+ content)
         do(content)
 
          
     elif flag == 'dir':
-         #si estrae la dir
-        print "si estrae i dati dai files delle dir " + content
+        print("PdftoRef> Extracting data from files in directory: "+ content)
         
+        '''Check if the dir under linux finish for \\'''
         if content[len(content)-1:]<> "/":
                        content+="/"
-        
-        mediaMin = 0
-        mediaMax = 0
-        min = 0
-        max = 0
+
+        '''Getting the pdf files in the dir'''
         pdfFiles = parser.listPdfFiles(content)
         lenght = len(pdfFiles)
+        
+        '''Itering over the files and extract the info one by one'''
         for each in pdfFiles:
-            print ">>estraggo i dati dal file"+ each
-            (min,max) = do(content+each,flag)
-            mediaMin += min
-            mediaMax += max
-            
-        mediaMin = mediaMin / lenght
-        mediaMax = mediaMax / lenght
-        print "**Media min: "+ str(mediaMin)
-        print "**Media max: "+ str(mediaMax)
+            print("PdftoRef> Extracting data from file: "+ each)
+            do(content+each)
+
+
+
+#### CODE TO GENERATE THE STATISTIC INFO LIKE MIN and MAX        
+#        mediaMin = 0
+#        mediaMax = 0
+#        min = 0
+#        max = 0
+#        pdfFiles = parser.listPdfFiles(content)
+#        lenght = len(pdfFiles)
+#        for each in pdfFiles:
+#            print ">>estraggo i dati dal file"+ each
+#            (min,max) = do(content+each,flag)
+#            mediaMin += min
+#            mediaMax += max
+#            
+#        mediaMin = mediaMin / lenght
+#        mediaMax = mediaMax / lenght
+#        print "**Media min: "+ str(mediaMin)
+#        print "**Media max: "+ str(mediaMax)
 
 def do(content,flag=None):
     '''
-    It is the main function of the application that get the text from pdf,
-    extracts the entries and the title.
+    It is the function of the application that get the text from pdf using Pdfminer,
+    extracts the entries and the title. At last write the html file with the relativa url
+    searched through Google web service.
     
     @param content: the pdf file to parse.
+    @param flag: the directory
     '''
 
     try:
+        ''' getting the text from pdf only concerning References'''
         clearText = PdfToText.getText(content)
         if clearText:
-            print clearText
-            if flag == 'dir':
-                (min,max) = Extractor.estimateCharsForEntry(clearText)
-                return (min,max)
-        else:
-            print "Unable to find references..."
+            ''' Try to extract the entries with three type of classification'''
+            entries = Extractor.entriesExtractor(clearText)
+            if entries:
+                '''Try to extract the titles, given the list of entries'''
+                titles = Extractor.titleExtractor(entries)
+                if titles:
+                    '''Entries and title are written in an HTML files where is specified by content'''
+                    HtmlWriter.write(entries,titles,content)
+                    print("PdftoRef> Done file: "+ content+"!")
+                    
+    #### CODE TO GENERATE THE STATISTIC INFO LIKE MIN and MAX       
+    #            if flag == 'dir':
+    #                (min,max) = Extractor.estimateCharsForEntry(clearText)
+    #                return (min,max)
+            else:
+                print("PdftoRef> Unable to find references.")
     except:
-        print "Unable to extract the text from PDF "
-
+        print("PdftoRef> Unable parse the pdf file.")
     
     
 #    (text,nPages) = PdfToText.convertToText(content)
@@ -92,8 +118,8 @@ def do(content,flag=None):
 #        if titles:
 #            print titles
 #            HtmlWriter.write(entries,titles,content)
-        
     
+
     
     
 if __name__ == "__main__":
