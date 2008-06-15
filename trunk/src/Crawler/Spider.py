@@ -1,6 +1,6 @@
 from SOAPpy import SOAPProxy
 from SOAPpy import Types
-import httplib
+import urllib
 
 # CONSTANTS
 _url = 'http://api.google.com/search/beta2'
@@ -61,13 +61,53 @@ def googleSearch(title):
 
 def getBibTex(url):
     
+    
     #FIXME: finish the retreival
     if url <> "#":
-        website = urllib.urlopen(url)
-        html = website.read()
-        index = html.find("BibTe")
-        html = html[index:]
-        index = html.find("@")
-    pass
+        if url.find("citeseer") <> -1:
+            bibtex = "BibTeX"
+            website = urllib.urlopen(url)
+            html = website.read()
+            index = html.find(bibtex)
+            if index <> -1:
+                html = html[index:]
+                index = html.find("@")
+                html = html[index:]
+                index = html.find("}</pre>")
+                html = html[:index+1]
+                return html
+            else:
+                 return None
+        elif url.find("doi.ieeecomputersociety") <> -1:
+            website = urllib.urlopen(url)
+            html = website.read()
+            index = html.find("Popup.document.write(\'@")
+            if index <> -1:
+                html = html[index+len("Popup.document.write(\'"):]
+                index = html.find("}')")
+                html = html[:index+1]
+                return html.replace("&nbsp;"," ").replace("<xsl:text>","").replace("<br/>","\n")
+            else:
+                return None
+        elif url.find("portal.acm.org") <> -1:
+            website = urllib.urlopen(url)
+            html = website.read()
+            index = html.find("window.open('popBibTex")
+            if index <> -1:
+                html = html[index+len("window.open('"):]
+                index = html.find(",'BibTex',")
+                html = html[:index]
+                website = urllib.urlopen("http://portal.acm.org/"+html)
+                html = website.read()
+                html = html[html.find('@')-1:]
+                html = html[:html.find('}\r\n</pre>')-1:]
+                return html
+            else:
+                return None
+            
+            
+            
+            
+    return None
 
 

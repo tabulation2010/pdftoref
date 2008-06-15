@@ -9,10 +9,11 @@ import xml.dom.minidom
 
 def getTextFromPdf(filepath,resultInXml=False):
     '''
+    It is the binding from the Pdfminer application and Pdftoref one.
     It returns the text extract from the PDF using the Pdfminer application.
-    Witouth parameter is return the text. With the xml parameter return text and xml.
+    Witouth parameter is return the text. With the xml parameter return text in xml format.
     
-    @parm resultInXml: the param to switch to text from xml
+    @param resultInXml: the param to switch to text from xml
     @return: the text or xml of the pdf
     '''
     debug=0
