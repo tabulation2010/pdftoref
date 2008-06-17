@@ -13,6 +13,64 @@ _reVirgola = re.compile(",")
 _minLenghtEntryRef = 70#150
 _maxLenghtEntryRef = 1200#600
 
+def getWellFormedTxt(document):
+    '''
+    Here the function that convert a list of references without a specific rule 
+    for the index in a list of References with a index made by number between 
+    square parentesis
+    
+    @param document: the pdf in XML form
+    @return: a string wellformed
+    '''
+    dom = xml.dom.minidom.parseString(document)
+    textListReverse = dom.getElementsByTagName("text")
+    textList = dom.getElementsByTagName("text")
+    lenght = len(textList)
+    #print getText( textList[lenght - 1081 +3].childNodes)
+    textListReverse.reverse()
+    
+    tmpTxt=''
+    first = -1
+    for i in range(lenght):
+        reverseText = getText( textListReverse[i].childNodes )
+        tmpTxt=  reverseText+ ' ' + tmpTxt
+        m = r.match(tmpTxt)
+        if m:
+            ref = m.group()
+            spaces=ref.count(" ")
+            print spaces
+            first = lenght - i  + spaces
+            break
+    if first == -1:
+        print "Unable to find ref"
+        return None
+    else:
+        plaintxt = " "
+        bboxAttr = textList[first].attributes["bbox"].value
+        txt = getText( textList[first].childNodes )
+        plaintxt+="[1] "+txt
+        j=2
+        r = re.compile("[A-Z]")
+        for i in range(first+1,lenght):
+            #swapping
+            bboxAttr_p = bboxAttr
+            txt_p = txt
+            x_p = getValueX(bboxAttr_p)
+            
+            bboxAttr = textList[i].attributes["bbox"].value
+            txt = getText( textList[i].childNodes )
+            
+            x = getValueX(bboxAttr)
+            if len(txt) > 0:
+                if ( x - x_p)  < 0 :
+                    
+                    if ( txt_p.endswith('.') and r.match(txt[0]) <> None ):
+                        plaintxt+="["+str(j)+"] " +txt
+                        j+=1
+                else:
+                    plaintxt= plaintxt+" "+ txt
+        return plaintxt.encode('ascii','replace')
+
 
 def estimateCharsForEntry(textRef):
     '''Here the function that estimate the stats from a samples of articles
@@ -34,7 +92,7 @@ def estimateCharsForEntry(textRef):
         
 
 
-def entriesExtractor(textRef):
+def entriesExtractor(textRef,document):
     '''An important function of the application. It takes the text with the references
     and try to classify the refences with the three type:
         1. B{[1]} N.Surname, N2.Surname2. Title. Conference. Year 2008. Pages 98-100
@@ -56,7 +114,9 @@ def entriesExtractor(textRef):
         listaRef = _reQuadre.split(textRef)
     elif type == "X.":
         listaRef = _reElencoPuntato.split(textRef)
-                                   
+    elif type == "Y":
+        textRef = getWellFormedTxt(document)
+        listaRef = _reQuadre(textRef)
                                            
     '''Clearing the list'''
     listaClearRef = []
@@ -72,11 +132,12 @@ def titleExtractor(listOfEntries):
     mediaLista = []
     entry = []
     subentry = [] 
+    
     for i in range(len(listOfEntries)):
         #print (str(i)+"***--->"+listaRegexp[i].replace('.<br>','')+lista[i])
         entry = _rePunto.split(listOfEntries[i])
         count = 0
-        j=0
+        j = 0
         media = 0
         for each in entry:
             #print ">>>: "+str(len(each)) +" "+ each
@@ -90,6 +151,7 @@ def titleExtractor(listOfEntries):
             
         media = count / j
         mediaLista.append(media)
+    
     titleList = []
     #print mediaLista
     found = False
@@ -132,7 +194,7 @@ def classifier(textRef):
         nCharsForEntry_P = len(textRef) / len(listaRefElencoPuntato)
 
     
-    if (len(listaRefQuadre) <> 0  and nCharsForEntry_Q > _minLenghtEntryRef and nCharsForEntry_Q < _maxLenghtEntryRef  ): 
+    if (len(listaRefQuadre) <> 0  and nCharsForEntry_Q > _minLenghtEntryRef): 
         #print "Applying the heuristic with regular expressions based on [X]"
         return "[X]"
     
@@ -140,5 +202,4 @@ def classifier(textRef):
         #print "Applying the heuristic with regular expressions based on X."
         return "X."
     else:
-        print "I need some other heuristics"
-        return ""
+        return "Y"

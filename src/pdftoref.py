@@ -85,11 +85,11 @@ def do(content,flag=None):
     try:
         ''' getting the text from pdf only concerning References'''
         
-        clearText = PdfToText.getText(content)
+        (clearText,document) = PdfToText.getText(content)
         if clearText:
             ''' Try to extract the entries with three type of classification'''
     
-            entries = Extractor.entriesExtractor(clearText)
+            entries = Extractor.entriesExtractor(clearText,document)
             
             if entries:
                 
