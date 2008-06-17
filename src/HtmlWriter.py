@@ -83,10 +83,11 @@ def write(entries,titles,path):
     for title in titles:
         for entry in entries:
             if entry.find(title) <> -1:
-                url = spider.googleSearch(title)
-                bibtex = spider.getBibTex(url)
+                url =  spider.googleSearch(title)
+                bibtex = None #spider.getBibTex(url)
                 dict.append(  (title,url,entry,bibtex) )
                 break
+
                 
                 
                 

@@ -53,10 +53,11 @@ def entriesExtractor(textRef):
     
     '''Switching on the kind suggested by the classifier'''
     if type  == "[X]":
-        listaRef = _reQuadre .split(textRef)
+        listaRef = _reQuadre.split(textRef)
     elif type == "X.":
         listaRef = _reElencoPuntato.split(textRef)
-    
+                                   
+                                           
     '''Clearing the list'''
     listaClearRef = []
     for i in range(len(listaRef)):
@@ -132,11 +133,11 @@ def classifier(textRef):
 
     
     if (len(listaRefQuadre) <> 0  and nCharsForEntry_Q > _minLenghtEntryRef and nCharsForEntry_Q < _maxLenghtEntryRef  ): 
-        print "Applying the heuristic with regular expressions based on [X]"
+        #print "Applying the heuristic with regular expressions based on [X]"
         return "[X]"
     
     elif ( len(listaRefElencoPuntato) <> 0  and nCharsForEntry_P > _minLenghtEntryRef):# and nCharsForEntry_P < _maxLenghtEntryRef  ): 
-        print "Applying the heuristic with regular expressions based on X."
+        #print "Applying the heuristic with regular expressions based on X."
         return "X."
     else:
         print "I need some other heuristics"
