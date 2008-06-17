@@ -63,8 +63,9 @@ def getBibTex(url):
     
     
     #FIXME: finish the retreival
+    #FIXME: Insert the timeout
     if url <> "#":
-        if url.find("citeseer") <> -1:
+        if url.find("citeseer.ist.psu.edu") <> -1:
             bibtex = "BibTeX"
             website = urllib.urlopen(url)
             html = website.read()

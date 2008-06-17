@@ -10,6 +10,8 @@ import Crawler.PdfToText as PdfToText
 import Crawler.Extractor as Extractor
 import HtmlWriter
 import sys
+from Spinner import  SpinCursor
+import Spinner
 
 def main():
     '''
@@ -25,12 +27,12 @@ def main():
         sys.exit(2)
         
     elif flag == 'file':
-        print("PdftoRef> Extracting data from file: "+ content)
+        print("PdftoRef> Running on the file: "+ content)
         do(content)
 
          
     elif flag == 'dir':
-        print("PdftoRef> Extracting data from files in directory: "+ content)
+        print("PdftoRef> Running on the directory: "+ content)
         
         '''Check if the dir under linux finish for \\'''
         if content[len(content)-1:]<> "/":
@@ -74,30 +76,60 @@ def do(content,flag=None):
     @param content: the pdf file to parse.
     @param flag: the directory
     '''
-
+    
+    
+#    spin = SpinCursor(msg="* Extracting the text from pdf")
+#    spin.start()
+    spinClearText = Spinner.startSpin("* Extracting the text from pdf")
+    
     try:
         ''' getting the text from pdf only concerning References'''
+        
         clearText = PdfToText.getText(content)
         if clearText:
             ''' Try to extract the entries with three type of classification'''
+    
             entries = Extractor.entriesExtractor(clearText)
+            
             if entries:
+                
+                Spinner.stopSpin(spinClearText, "Done")
+                
+                spinEntries = Spinner.startSpin("* Extracting the entries and titles")
+ 
                 '''Try to extract the titles, given the list of entries'''
                 titles = Extractor.titleExtractor(entries)
+                
                 if titles:
+                    
+                    Spinner.stopSpin(spinEntries, "Done")
+                    
+                    spinHtml = Spinner.startSpin("* Querying Google and writing down html file")
+                    
                     '''Entries and title are written in an HTML files where is specified by content'''
                     HtmlWriter.write(entries,titles,content)
-                    print("PdftoRef> Done file: "+ content+"!")
                     
-    #### CODE TO GENERATE THE STATISTIC INFO LIKE MIN and MAX       
-    #            if flag == 'dir':
-    #                (min,max) = Extractor.estimateCharsForEntry(clearText)
-    #                return (min,max)
+                    Spinner.stopSpin(spinHtml, "Done")
+                    
+                    print("PdftoRef> Finished file: "+ content+"!")
+                        
+        #### CODE TO GENERATE THE STATISTIC INFO LIKE MIN and MAX       
+        #            if flag == 'dir':
+        #                (min,max) = Extractor.estimateCharsForEntry(clearText)
+        #                return (min,max)
+                else:
+                    Spinner.stopSpin(spinHtml, "Done")
             else:
-                print("PdftoRef> Unable to find references.")
+                Spinner.stopSpin(spinEntries, "Failed")
+        else:
+            Spinner.stopSpin(spinClearText, "Failed")
+                
+
     except:
-        print("PdftoRef> Unable parse the pdf file.")
-    
+        #print("PdftoRef> Unable to parse the pdf file.")
+        Spinner.stopSpin(spinClearText, "Failed")
+        Spinner.stopSpin(spinEntries, "Failed")
+        Spinner.stopSpin(spinHtml, "Failed")
     
 #    (text,nPages) = PdfToText.convertToText(content)
 #    #text = unicode(text,'utf8')
