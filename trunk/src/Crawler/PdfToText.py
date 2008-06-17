@@ -19,7 +19,7 @@ def getText(filepath):
     @return: the references in a text format. If thery are not found return None.
     '''
     
-    text = Pdf2Txt.getTextFromPdf(filepath)
+    (text,document) = Pdf2Txt.getTextFromPdf(filepath)
     
     r = re.compile(_references)
     listaRef = r.findall(text)
@@ -30,7 +30,7 @@ def getText(filepath):
         lastRef = listaRef[ len(listaRef) - 1 ]
         index = text.rfind(lastRef)
         text = text[index+len(lastRef):]
-        return text
+        return (text,document)
 
 
 ########### OLD CODE ############

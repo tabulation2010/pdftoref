@@ -7,7 +7,7 @@ import StringIO
 import xml.dom.minidom
 
 
-def getTextFromPdf(filepath,resultInXml=False):
+def getTextFromPdf(filepath):
     '''
     It is the binding from the Pdfminer application and Pdftoref one.
     It returns the text extract from the PDF using the Pdfminer application.
@@ -32,19 +32,15 @@ def getTextFromPdf(filepath,resultInXml=False):
     document = outfp.getvalue()
     outfp.close()
     
-    if resultInXml:
-        return document
-    else:
-        dom = xml.dom.minidom.parseString(document)
-        textList = dom.getElementsByTagName("text")
-        
-        
-        txt = " "
-        for text in textList:
-            childs = text.childNodes
-            for child in childs:
-                txt += ' ' + child.toxml().encode('ascii','ignore')
-            #print text.toxml().encode('ascii','ignore')
-        
-        return txt
+    dom = xml.dom.minidom.parseString(document)
+    textList = dom.getElementsByTagName("text")   
+    
+    txt = " "
+    for text in textList:
+        childs = text.childNodes
+        for child in childs:
+            txt += ' ' + child.toxml().encode('ascii','ignore')
+        #print text.toxml().encode('ascii','ignore')
+    
+    return (txt,document)
 
