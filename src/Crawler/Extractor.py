@@ -185,7 +185,7 @@ def entriesExtractor(plaintext):
     
     '''Switching on the kind suggested by the classifier'''
 #   if type  == "[X]":
-    listaRef = _reQuadre.split(textRef)
+    listaRef = _reQuadre.split(plaintext)
 #    elif type == "X.":
 #        listaRef = _reElencoPuntato.split(textRef)
 #    elif type == "Y":
