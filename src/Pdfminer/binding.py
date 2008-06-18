@@ -42,5 +42,5 @@ def getTextFromPdf(filepath):
             txt += ' ' + child.toxml().encode('ascii','ignore')
         #print text.toxml().encode('ascii','ignore')
     
-    return (txt,document)
+    return document
 
