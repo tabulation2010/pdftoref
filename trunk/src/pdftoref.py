@@ -10,6 +10,8 @@ import Crawler.PdfToText as PdfToText
 import Crawler.Extractor as Extractor
 import HtmlWriter
 import sys
+import re
+import Pdfminer.binding as Pdf2Txt
 from Spinner import  SpinCursor
 import Spinner
 
@@ -80,57 +82,61 @@ def do(content,flag=None):
     
 #    spin = SpinCursor(msg="* Extracting the text from pdf")
 #    spin.start()
-    spinClearText = Spinner.startSpin("* Extracting the text from pdf")
+ #   spinClearText = Spinner.startSpin("* Extracting the text from pdf")
     
-    try:
-        ''' getting the text from pdf only concerning References'''
+#    try:
+    ''' getting the text from pdf only concerning References'''
         
-        (clearText,document) = PdfToText.getText(content)
-        if clearText:
-            ''' Try to extract the entries with three type of classification'''
+    document = Pdf2Txt.getTextFromPdf(content)
+    plainText = Extractor.getPlainText(document)
     
-            entries = Extractor.entriesExtractor(clearText,document)
-            
-            if entries:
+    if plainText:
+        ''' Try to extract the entries with three type of classification'''
+        entries = Extractor.entriesExtractor(plainText)
+        
+        if entries:
                 
-                Spinner.stopSpin(spinClearText, "Done")
+  #              Spinner.stopSpin(spinClearText, "Done")
                 
-                spinEntries = Spinner.startSpin("* Extracting the entries and titles")
+  #              spinEntries = Spinner.startSpin("* Extracting the entries and titles")
  
                 '''Try to extract the titles, given the list of entries'''
                 titles = Extractor.titleExtractor(entries)
                 
                 if titles:
                     
-                    Spinner.stopSpin(spinEntries, "Done")
-                    
-                    spinHtml = Spinner.startSpin("* Querying Google and writing down html file")
-                    
+   #                 Spinner.stopSpin(spinEntries, "Done")
+                
+#                    spinHtml = Spinner.startSpin("* Querying Google and writing down html file")
+                
                     '''Entries and title are written in an HTML files where is specified by content'''
                     HtmlWriter.write(entries,titles,content)
-                    
-                    Spinner.stopSpin(spinHtml, "Done")
-                    
+                
+ #                   Spinner.stopSpin(spinHtml, "Done")
+                
                     print("PdftoRef> Finished file: "+ content+"!")
-                        
-        #### CODE TO GENERATE THE STATISTIC INFO LIKE MIN and MAX       
-        #            if flag == 'dir':
-        #                (min,max) = Extractor.estimateCharsForEntry(clearText)
-        #                return (min,max)
+                    
+    #### CODE TO GENERATE THE STATISTIC INFO LIKE MIN and MAX       
+    #            if flag == 'dir':
+    #                (min,max) = Extractor.estimateCharsForEntry(clearText)
+    #                return (min,max)
                 else:
-                    Spinner.stopSpin(spinHtml, "Done")
-            else:
-                Spinner.stopSpin(spinEntries, "Failed")
+                    print("PdftoRef> Finished file: "+ content+"!")
+  #                 Spinner.stopSpin(spinHtml, "Done")
         else:
-            Spinner.stopSpin(spinClearText, "Failed")
+            print("PdftoRef> Finished file: "+ content+"!")
+   #         Spinner.stopSpin(spinEntries, "Failed")
+    else:
+         print("PdftoRef> Finished file: "+ content+"!")
+    #    Spinner.stopSpin(spinClearText, "Failed")
                 
 
-    except:
-        #print("PdftoRef> Unable to parse the pdf file.")
-        Spinner.stopSpin(spinClearText, "Failed")
-        Spinner.stopSpin(spinEntries, "Failed")
-        Spinner.stopSpin(spinHtml, "Failed")
-    
+   # except:
+#    print("PdftoRef> Unable to parse the pdf file.")
+  #  Spinner.stopSpin(spinClearText, "Failed")
+  #  Spinner.stopSpin(spinEntries, "Failed")
+  #  Spinner.stopSpin(spinHtml, "Failed")
+
 #    (text,nPages) = PdfToText.convertToText(content)
 #    #text = unicode(text,'utf8')
 #    print text
@@ -142,7 +148,7 @@ def do(content,flag=None):
 #    '''
 #    clearText = PdfToText.addSpaces(text,content,nPages)
 #    print clearText
-    
+
 #    entries = Extractor.entriesExtractor(clearText)
 #    if entries:
 #        titles = Extractor.titleExtractor(entries)
@@ -155,6 +161,4 @@ def do(content,flag=None):
     
     
 if __name__ == "__main__":
-        main()
-    
-        
+    main()

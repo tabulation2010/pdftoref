@@ -19,18 +19,18 @@ def getText(filepath):
     @return: the references in a text format. If thery are not found return None.
     '''
     
-    (text,document) = Pdf2Txt.getTextFromPdf(filepath)
+    document = Pdf2Txt.getTextFromPdf(filepath)
     
-    r = re.compile(_references)
-    listaRef = r.findall(text)
-    if len(listaRef) == 0:
-        return None
-    else:
-        '''Filtering out the "non-reference" text'''
-        lastRef = listaRef[ len(listaRef) - 1 ]
-        index = text.rfind(lastRef)
-        text = text[index+len(lastRef):]
-        return (text,document)
+#    r = re.compile(_references)
+#    listaRef = r.findall(text)
+#    if len(listaRef) == 0:
+#        return None
+#    else:
+#        '''Filtering out the "non-reference" text'''
+#        lastRef = listaRef[ len(listaRef) - 1 ]
+#        index = text.rfind(lastRef)
+#        text = text[index+len(lastRef):]
+#        return (text,document)
 
 
 ########### OLD CODE ############
