@@ -95,12 +95,12 @@ def getPlainText(document):
         else:
             plaintxt = " "
             txt = getText(textList[first].childNodes )
-            print textList[first].toxml()
+            #print textList[first].toxml()
             bboxAttr = textList[first].attributes["bbox"].value
             
             
             if (txt.find("1.")<> -1):
-                txt.replace("1.","[1]")
+                txt = txt.replace("1.","[1]")
                 plaintxt+=txt
                 j=2
                 r = re.compile("[1-9]?[1-9].")
@@ -114,13 +114,13 @@ def getPlainText(document):
                     txt = getText( textList[i].childNodes )
                     
                     if len(txt) > 0:
-                        if (txt.find(str(j)+".")) :
-                                txt.replace(str(j)+".", "[" + str(j) +"]")
+                        if (txt.find(str(j)+".")<>-1) :
+                                txt = txt.replace(str(j)+".", "[" + str(j) +"]")
                                 plaintxt+=" "+txt
                                 j+=1
                         else:
                             plaintxt= plaintxt+" "+ txt
-                return plaintxt.encode('ascii','replace')
+                return plaintxt.encode('ascii','ignore')
             
             else:
                 plaintxt+="[1] "+txt
@@ -143,7 +143,7 @@ def getPlainText(document):
                                 j+=1
                         else:
                             plaintxt= plaintxt+" "+ txt
-                        return plaintxt.encode('ascii','replace')
+                return plaintxt.encode('ascii','ignore')
                     
                     
 def estimateCharsForEntry(textRef):
