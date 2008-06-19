@@ -1,6 +1,7 @@
 from SOAPpy import SOAPProxy
 from SOAPpy import Types
-import urllib
+import urllib2
+import socket
 
 # CONSTANTS
 _url = 'http://api.google.com/search/beta2'
@@ -60,55 +61,66 @@ def googleSearch(title):
 
 
 def getBibTex(url):
-    
-    
-    #FIXME: finish the retreival
-    #FIXME: Insert the timeout
-    if url <> "#":
-        if url.find("citeseer.ist.psu.edu") <> -1:
-            bibtex = "BibTeX"
-            website = urllib.urlopen(url)
-            html = website.read()
-            index = html.find(bibtex)
-            if index <> -1:
-                html = html[index:]
-                index = html.find("@")
-                html = html[index:]
-                index = html.find("}</pre>")
-                html = html[:index+1]
-                return html
-            else:
-                 return None
-        elif url.find("doi.ieeecomputersociety") <> -1:
-            website = urllib.urlopen(url)
-            html = website.read()
-            index = html.find("Popup.document.write(\'@")
-            if index <> -1:
-                html = html[index+len("Popup.document.write(\'"):]
-                index = html.find("}')")
-                html = html[:index+1]
-                return html.replace("&nbsp;"," ").replace("<xsl:text>","").replace("<br/>","\n")
-            else:
-                return None
-        elif url.find("portal.acm.org") <> -1:
-            website = urllib.urlopen(url)
-            html = website.read()
-            index = html.find("window.open('popBibTex")
-            if index <> -1:
-                html = html[index+len("window.open('"):]
-                index = html.find(",'BibTex',")
-                html = html[:index]
-                website = urllib.urlopen("http://portal.acm.org/"+html)
-                html = website.read()
-                html = html[html.find('@')-1:]
-                html = html[:html.find('}\r\n</pre>')-1:]
-                return html
-            else:
-                return None
+       
+    # timeout in seconds
+    timeout = 10
+    socket.setdefaulttimeout(timeout)
+    html = openUrl(url)
+    if html:
+        #FIXME: finish the retreival
+        #FIXME: Insert the timeout
+        if url <> "#":
+            if url.find("citeseer.ist.psu.edu") <> -1:
+                bibtex = "BibTeX"
+                index = html.find(bibtex)
+                if index <> -1:
+                    html = html[index:]
+                    index = html.find("@")
+                    html = html[index:]
+                    index = html.find("}</pre>")
+                    html = html[:index+1]
+                    return html
+                else:
+                     return None
+            elif url.find("doi.ieeecomputersociety") <> -1:
+                index = html.find("Popup.document.write(\'@")
+                if index <> -1:
+                    html = html[index+len("Popup.document.write(\'"):]
+                    index = html.find("}')")
+                    html = html[:index+1]
+                    return html.replace("&nbsp;"," ").replace("<xsl:text>","").replace("<br/>","\n")
+                else:
+                    return None
+            elif url.find("portal.acm.org") <> -1:
+                index = html.find("window.open('popBibTex")
+                if index <> -1:
+                    html = html[index+len("window.open('"):]
+                    index = html.find(",'BibTex',")
+                    html = html[:index]
+                    html = openUrl("http://portal.acm.org/"+html)
+                    html = html[html.find('@')-1:]
+                    html = html[:html.find('}\r\n</pre>')-1:]
+                    return html
+                else:
+                    return None
             
             
             
             
     return None
 
+
+def openUrl(url):
+    html=''
+    try:
+            if url <> "#":
+                website = urllib2.urlopen(url)
+                html = website.read()
+                return html
+            else:
+                return None
+    except urllib2.URLError:
+        print "The url "+url+" is in timeout. Skipping it."
+        return None
+        
 
