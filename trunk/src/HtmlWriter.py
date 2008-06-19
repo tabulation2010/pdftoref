@@ -96,7 +96,7 @@ def write(entries,titles,path):
                     url='#'
                     print "Connession lost."
                     
-                bibtex = spider.getBibTex(url)
+                bibtex = None #spider.getBibTex(url)
                 dict.append(  (title,url,entry,bibtex) )
                 break
 

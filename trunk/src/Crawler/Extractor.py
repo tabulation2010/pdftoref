@@ -29,28 +29,6 @@ def getValueX(bbox):
     return float(l[0])
 
 
-def getReferences(document):
-    dom = xml.dom.minidom.parseString(document)
-    textList = dom.getElementsByTagName("text")
-    lenght = len(textList)
-    text=''
-    for each in textList:
-        childs = each.childNodes
-        for child in childs:
-            text += ' ' + child.toxml().encode('ascii','ignore')
-
-            
-    r = re.compile(_references)
-    listaRef = r.findall(text)
-    if len(listaRef) == 0:
-        return None
-    else:
-        '''Filtering out the "non-reference" text'''
-        lastRef = listaRef[ len(listaRef) - 1 ]
-        index = text.rfind(lastRef)
-        text = text[index+len(lastRef):]
-        return text   
-
 def getPlainText(document):
     '''
     Here the function that convert a list of references without a specific rule 
@@ -60,51 +38,54 @@ def getPlainText(document):
     @param document: the pdf in XML form
     @return: a string wellformed
     '''
-    referencesTxt = getReferences(document) 
     
-    type = classifier(referencesTxt)
-    listaRef = []
+    dom = xml.dom.minidom.parseString(document)
+    textListReverse = dom.getElementsByTagName("text")
+    textList = dom.getElementsByTagName("text")
+    lenght = len(textList)
+    textListReverse.reverse()
     
-    '''Switching on the kind suggested by the classifier'''
-    if (type  == "[X]"):
-        return referencesTxt
+    tmpTxt=''
+    first = -1
+    
+    '''
+    Here look for the Dom text nodes that contains "References" keyword
+    '''
+    for i in range(lenght):
+        reverseText = getText( textListReverse[i].childNodes )
+        tmpTxt=  reverseText+ ' ' + tmpTxt
+        r = re.compile(_references)
+        m = r.match(tmpTxt)
+        if m:
+            ref = m.group()
+            spaces=ref.count(" ")
+            first = lenght - i  + spaces
+            break
+    '''
+    Here we get "References" in the text if first is different from -1
+    '''
+    if first == -1:
+        print "Unable to find ref"
+        return None
     else:
-        dom = xml.dom.minidom.parseString(document)
-        textListReverse = dom.getElementsByTagName("text")
-        textList = dom.getElementsByTagName("text")
-        lenght = len(textList)
-        #print getText( textList[lenght - 1081 +3].childNodes)
-        textListReverse.reverse()
-        
-        tmpTxt=''
-        first = -1
-        for i in range(lenght):
-            reverseText = getText( textListReverse[i].childNodes )
-            tmpTxt=  reverseText+ ' ' + tmpTxt
-            r = re.compile(_references)
-            m = r.match(tmpTxt)
-            if m:
-                ref = m.group()
-                spaces=ref.count(" ")
-                print spaces
-                first = lenght - i  + spaces
-                break
-        if first == -1:
-            print "Unable to find ref"
-            return None
+        plaintxt = ""
+        txt = getText(textList[first].childNodes )
+        bboxAttr = textList[first].attributes["bbox"].value
+        #print textList[first].toxml()
+        if (txt.find("[1]"))<>-1:
+            plaintxt+=txt
+            for i in range(first+1,lenght):
+                txt = getText( textList[i].childNodes )
+                if len(txt) > 0:
+                        plaintxt+= " " + txt
+            return plaintxt.encode('ascii','ignore')
         else:
-            plaintxt = " "
-            txt = getText(textList[first].childNodes )
-            #print textList[first].toxml()
-            bboxAttr = textList[first].attributes["bbox"].value
-            
-            
-            if (txt.find("1.")<> -1):
+            if (txt.find("1.") <> -1):
                 txt = txt.replace("1.","[1]")
                 plaintxt+=txt
                 j=2
-                r = re.compile("[1-9]?[1-9].")
                 for i in range(first+1,lenght):
+                    txt = getText( textList[i].childNodes )
                     #swapping
                     bboxAttr_p = bboxAttr
                     txt_p = txt
@@ -112,16 +93,15 @@ def getPlainText(document):
                     
                     bboxAttr = textList[i].attributes["bbox"].value
                     txt = getText( textList[i].childNodes )
-                    
-                    if len(txt) > 0:
-                        if (txt.find(str(j)+".")<>-1) :
-                                txt = txt.replace(str(j)+".", "[" + str(j) +"]")
-                                plaintxt+=" "+txt
-                                j+=1
-                        else:
-                            plaintxt= plaintxt+" "+ txt
+                    x = getValueX(bboxAttr)
+                                        
+                    if len(txt) > 0 and (x - x_p < 0) and (txt.startswith(str(j)+".")):
+                        txt = txt.replace(str(j)+".", "[" + str(j) +"]")
+                        plaintxt+=" "+txt
+                        j+=1
+                    else:
+                        plaintxt+=" " + txt
                 return plaintxt.encode('ascii','ignore')
-            
             else:
                 plaintxt+="[1] "+txt
                 j=2
@@ -134,8 +114,8 @@ def getPlainText(document):
                     
                     bboxAttr = textList[i].attributes["bbox"].value
                     txt = getText( textList[i].childNodes )
-                    
                     x = getValueX(bboxAttr)
+                    
                     if len(txt) > 0:
                         if ( x - x_p)  < 0 :           
                             if ( txt_p.endswith('.') and r.match(txt[0]) <> None ):
