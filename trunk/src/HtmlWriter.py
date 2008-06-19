@@ -1,4 +1,7 @@
 import Crawler.Spider as spider
+import SOAPpy
+import socket
+import re
 
 _htmlHeader1 ="<html>\
 <head>\
@@ -83,8 +86,17 @@ def write(entries,titles,path):
     for title in titles:
         for entry in entries:
             if entry.find(title) <> -1:
-                url =  spider.googleSearch(title)
-                bibtex = None #spider.getBibTex(url)
+                url = ''
+                try:
+                    url =  spider.googleSearch(title)
+                except SOAPpy.Types.faultType:
+                    url='#'
+                    print "Soap failure on querying Google WS."
+                except (socket.timeout,socket.gaierror):
+                    url='#'
+                    print "Connession lost."
+                    
+                bibtex = spider.getBibTex(url)
                 dict.append(  (title,url,entry,bibtex) )
                 break
 
