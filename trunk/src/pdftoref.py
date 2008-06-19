@@ -22,14 +22,14 @@ def main():
     the exctractor finishe, it writes the result into an html file. 
     '''
    
-    (content,flag) =  parser.parse(sys.argv)
+    (content,flag,urlFlag,bibtexFlag) =  parser.parse(sys.argv)
     if flag == 'None':
         parser.usage()
         sys.exit(2)
         
     elif flag == 'file':
         print("PdftoRef> Running on the file: "+ content)
-        do(content)
+        do(content,urlFlag,bibtexFlag)
 
          
     elif flag == 'dir':
@@ -46,7 +46,7 @@ def main():
         '''Itering over the files and extract the info one by one'''
         for each in pdfFiles:
             print("PdftoRef> Extracting data from file: "+ each)
-            do(content+each)
+            do(content+each,urlFlag,bibtexFlag)
 
 
 
@@ -68,7 +68,7 @@ def main():
 #        print "**Media min: "+ str(mediaMin)
 #        print "**Media max: "+ str(mediaMax)
 
-def do(content,flag=None):
+def do(content,urlFlag,bibtexFlag):
     '''
     It is the function of the application that get the text from pdf using Pdfminer,
     extracts the entries and the title. At last write the html file with the relativa url
@@ -109,7 +109,7 @@ def do(content,flag=None):
 #                    spinHtml = Spinner.startSpin("* Querying Google and writing down html file")
                 
                     '''Entries and title are written in an HTML files where is specified by content'''
-                    HtmlWriter.write(entries,titles,content)
+                    HtmlWriter.write(entries,titles,content,urlFlag,bibtexFlag)
                 
  #                   Spinner.stopSpin(spinHtml, "Done")
                 

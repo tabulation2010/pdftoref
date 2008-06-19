@@ -4,11 +4,13 @@ def parse(argv):
     
     content = ''
     flag= 'None'
+    url = False
+    bibtex = False
     
     try:
-        opts, args = getopt.getopt(argv[1:], "hf:d:", ["help","file=","dir="])
+        opts, args = getopt.getopt(argv[1:], "hf:d:ub", ["help","file=","dir=","url","bibtex"])
     except getopt.GetoptError, err:
-         return (content,flag)
+         return (content,flag,url,bibtex)
 
     for o, a in opts:
         if o in ("-h", "--help"):
@@ -20,10 +22,14 @@ def parse(argv):
         elif o in ("-d", "--dir"):
             content = a
             flag = "dir"
+        elif o in ("-u", "--url"):
+            url=True
+        elif o in ("-b", "--bibtex"):
+            bibtex=True
         else:
             continue
     
-    return (content,flag)
+    return (content,flag,url,bibtex)
 
 def usage():
     print "Usage: \n \

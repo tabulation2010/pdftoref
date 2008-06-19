@@ -75,35 +75,44 @@ _htmlFooter = '</div>\
 </div></body>\
 </html>'
 
-def write(entries,titles,path):
+def write(entries,titles,path,urlFlag,bibtexFlag):
     output = open(path[:len(path)- 4]+".html","w")
     
 
-    output.write(_htmlHeader1+"References for file: "+path + _htmlHeader2)
+    output.write(_htmlHeader1+"References for the article: "+path + _htmlHeader2)
     
     #FIXME: Now we write in HTML ONLY the entries with a title but we must write all entries.
     dict = []
     for title in titles:
         for entry in entries:
             if entry.find(title) <> -1:
-                url = ''
-                try:
-                    url =  spider.googleSearch(title)
-                except SOAPpy.Types.faultType:
-                    url='#'
-                    print "Soap failure on querying Google WS."
-                except (socket.timeout,socket.gaierror):
-                    url='#'
-                    print "Connession lost."
-                    
-                bibtex = None #spider.getBibTex(url)
+                
+                if urlFlag:
+                    url = ''
+                    try:
+                        url =  spider.googleSearch(title)
+                    except SOAPpy.Types.faultType:
+                        url='#'
+                        print "Soap failure on querying Google WS."
+                    except (socket.timeout,socket.gaierror):
+                        url='#'
+                        print "Connection lost."
+                else:
+                    url = '#'
+                
+                
+                if bibtexFlag:
+                    bibtex = spider.getBibTex(url)
+                else:
+                    bibtex = None
+                
                 dict.append(  (title,url,entry,bibtex) )
                 break
 
                 
                 
                 
-    output.write("<h1>References of scientific article: <i><a href=\""+path+"\">"+path+"</a></i></h1>\n<div id=\"content\"><ol>")
+    output.write("<h1>References for the article: <i><a href=\""+path+"\">"+path+"</a></i></h1>\n<div id=\"content\"><ol>")
     
     lenght =  len(titles)
     i=0
