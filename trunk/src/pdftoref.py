@@ -6,7 +6,6 @@
 
 
 import Parser.parser as parser
-import Crawler.PdfToText as PdfToText
 import Crawler.Extractor as Extractor
 import HtmlWriter
 import sys

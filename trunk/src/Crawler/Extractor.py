@@ -1,5 +1,4 @@
 import re
-import PdfToText
 import sys
 import StringIO
 import xml.dom.minidom
@@ -84,6 +83,7 @@ def getPlainText(document):
                 txt = txt.replace("1.","[1]")
                 plaintxt+=txt
                 j=2
+                r = re.compile(" ?[0-9]?[0-9]\.")
                 for i in range(first+1,lenght):
                     txt = getText( textList[i].childNodes )
                     #swapping
@@ -94,8 +94,16 @@ def getPlainText(document):
                     bboxAttr = textList[i].attributes["bbox"].value
                     txt = getText( textList[i].childNodes )
                     x = getValueX(bboxAttr)
+                    
+                    m = r.match(txt)
+                    
+                    if (m):
+                        s = m.group()
+                        s = s.replace(".","")
+                        s = s.replace(" ","")
                                         
-                    if len(txt) > 0 and (x - x_p < 0) and (txt.startswith(str(j)+".")):
+                    if len(txt) > 0 and (x - x_p < 0) and (m <> None) and int(s)>=j:
+                        j=int(s)
                         txt = txt.replace(str(j)+".", "[" + str(j) +"]")
                         plaintxt+=" "+txt
                         j+=1
