@@ -11,8 +11,10 @@ import HtmlWriter
 import sys
 import re
 import Pdfminer.binding as Pdf2Txt
+import Pdfminer.pdfparser
 from Spinner import  SpinCursor
 import Spinner
+import Exception
 
 def main():
     '''
@@ -83,54 +85,69 @@ def do(content,urlFlag,bibtexFlag):
 #    spin.start()
  #   spinClearText = Spinner.startSpin("* Extracting the text from pdf")
     
-#    try:
-    ''' getting the text from pdf only concerning References'''
+    try:
+        ''' getting the text from pdf only concerning References'''
+            
+        document = Pdf2Txt.getTextFromPdf(content)
+        plainText = Extractor.getPlainText(document)
         
-    document = Pdf2Txt.getTextFromPdf(content)
-    plainText = Extractor.getPlainText(document)
-    
-    if plainText:
-        ''' Try to extract the entries with three type of classification'''
-        entries = Extractor.entriesExtractor(plainText)
-        
-        if entries:
-                
-  #              Spinner.stopSpin(spinClearText, "Done")
-                
-  #              spinEntries = Spinner.startSpin("* Extracting the entries and titles")
- 
-                '''Try to extract the titles, given the list of entries'''
-                titles = Extractor.titleExtractor(entries)
-                
-                if titles:
+        if plainText:
+            ''' Try to extract the entries with three type of classification'''
+            entries = Extractor.entriesExtractor(plainText)
+            
+            if entries:
                     
-   #                 Spinner.stopSpin(spinEntries, "Done")
-                
-#                    spinHtml = Spinner.startSpin("* Querying Google and writing down html file")
-                
-                    '''Entries and title are written in an HTML files where is specified by content'''
-                    HtmlWriter.write(entries,titles,content,urlFlag,bibtexFlag)
-                
- #                   Spinner.stopSpin(spinHtml, "Done")
-                
-                    print("PdftoRef> Finished file: "+ content+"!")
+      #              Spinner.stopSpin(spinClearText, "Done")
                     
-    #### CODE TO GENERATE THE STATISTIC INFO LIKE MIN and MAX       
-    #            if flag == 'dir':
-    #                (min,max) = Extractor.estimateCharsForEntry(clearText)
-    #                return (min,max)
-                else:
-                    print("PdftoRef> Finished file: "+ content+"!")
-  #                 Spinner.stopSpin(spinHtml, "Done")
+      #              spinEntries = Spinner.startSpin("* Extracting the entries and titles")
+     
+                    '''Try to extract the titles, given the list of entries'''
+                    titles = Extractor.titleExtractor(entries)
+                    
+                    if titles:
+                        
+       #                 Spinner.stopSpin(spinEntries, "Done")
+                    
+    #                    spinHtml = Spinner.startSpin("* Querying Google and writing down html file")
+                    
+                        '''Entries and title are written in an HTML files where is specified by content'''
+                        HtmlWriter.write(entries,titles,content,urlFlag,bibtexFlag)
+                    
+     #                   Spinner.stopSpin(spinHtml, "Done")
+                    
+                        
+                        
+        #### CODE TO GENERATE THE STATISTIC INFO LIKE MIN and MAX       
+        #            if flag == 'dir':
+        #                (min,max) = Extractor.estimateCharsForEntry(clearText)
+        #                return (min,max)
+                    else:
+                        print "Unable to extract text entries"
+                        
+      #                 Spinner.stopSpin(spinHtml, "Failed")
+            else:
+                print "Unable to extract entries from the text"
+                
+       #         Spinner.stopSpin(spinEntries, "Failed")
         else:
-            print("PdftoRef> Finished file: "+ content+"!")
-   #         Spinner.stopSpin(spinEntries, "Failed")
-    else:
-         print("PdftoRef> Finished file: "+ content+"!")
-    #    Spinner.stopSpin(spinClearText, "Failed")
-                
+             print "Unable to extract titles from the text"
+             
+        #    Spinner.stopSpin(spinClearText, "Failed")
+                    
 
-   # except:
+    except Exception.ReferencesNotFoundError, e:
+        print e.message
+        
+    except IOError:
+        print "File not found on filesystem."
+        
+    except Pdfminer.pdfparser.PDFValueError:
+        print "Unable to parse the pdf file."
+        
+    finally:
+        print("PdftoRef> Finished file: "+ content+"!")
+        
+        
 #    print("PdftoRef> Unable to parse the pdf file.")
   #  Spinner.stopSpin(spinClearText, "Failed")
   #  Spinner.stopSpin(spinEntries, "Failed")

@@ -76,6 +76,16 @@ _htmlFooter = '</div>\
 </html>'
 
 def write(entries,titles,path,urlFlag,bibtexFlag):
+    '''
+    It is the function of the application that write down into an html files all the entries
+    of the articles, searching the URI of title on the internet via Google WS and searchin Bibtex.
+    
+    @param entries: the entries of references
+    @param titles: the titles of entries of references
+    @param path: the path where save the file
+    @param urlFlag: the boolean url Flag to do or no to search over internet
+    @return bibtexFlag: the boolean bibtex Flag to do or no to search over internet
+    '''
     output = open(path[:len(path)- 4]+".html","w")
     
 
