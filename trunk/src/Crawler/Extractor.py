@@ -2,7 +2,7 @@ import re
 import sys
 import StringIO
 import xml.dom.minidom
-
+from Exception import ReferencesNotFoundError
 '''
 Here is the defitions of all regular expression used by the extractor for
 entries and titles. Thera are also some statistical constants for the average of the 
@@ -64,7 +64,8 @@ def getPlainText(document):
     Here we get "References" in the text if first is different from -1
     '''
     if first == -1:
-        print "Unable to find ref"
+        #print "Unable to find ref"
+        raise ReferencesNotFoundError
         return None
     else:
         plaintxt = ""

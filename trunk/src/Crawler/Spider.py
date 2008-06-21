@@ -23,6 +23,13 @@ _safeSearch = SOAP_FALSE
 _lang_restrict = ''
 
 def googleSearch(title):
+    '''
+    It is the function of the application that make the request at google WS using
+    getting the first url of response.
+    
+    @param title: the title of the article to serach for
+    @return: the first url
+    '''
     
     _query=title
 
@@ -61,9 +68,17 @@ def googleSearch(title):
 
 
 def getBibTex(url):
+    '''
+    It is the function of the application that serach the bibxtex entry in the url 
+    provided by Google WS. 
+    The function switch on each site and for each site it makes a particular search.
+    
+    @param url: the url where start to serach
+    @return: the string with the bibtex entry
+    '''
        
     # timeout in seconds
-    timeout = 10
+    timeout = 5
     socket.setdefaulttimeout(timeout)
     html = openUrl(url)
     if html:
@@ -111,6 +126,14 @@ def getBibTex(url):
 
 
 def openUrl(url):
+    '''
+    It is the function that get the html from the specific url 
+    using urllib2 python library.
+    
+    @param url: the url to connect to
+    @return: the html of the page in the url
+    '''
+    
     html=''
     try:
             if url <> "#":

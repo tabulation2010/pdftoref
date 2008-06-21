@@ -1,6 +1,13 @@
 import getopt
 
 def parse(argv):
+    '''
+    It is the function of the application that parses the arguments and flags passed 
+    through command line.
+    
+    @param arg: the arguments in command line
+    @return: the file or directory path, the flag to do on a dir or on a file, the bibtex flag, the url flag
+    '''
     
     content = ''
     flag= 'None'
@@ -32,13 +39,25 @@ def parse(argv):
     return (content,flag,url,bibtex)
 
 def usage():
-    print "Usage: \n \
-    -h                   or   --help                      This help Commands \n \
-    -f <path/to/file>    or   --file=<path/to/file>       Run PdfToRef recursively onto the PDF content in the dir \n \
-    -d </path/to/dir>    or   --dir=</path/to/dir>        Run PdfToRef onto the PDF content in the file specified path    "
-    
+    print "     Usage: \n\n \
+    -h            --help              This help Command \n \
+    -f filepath   --file=filepath     Run on a file \n \
+    -d directory  --dir=directory     Run into a directory \n \
+    -u            --url               Get the title url \n \
+    -b            --bibtex            Get the bibtex article \n \n \
+    Examples:\n\n \
+    pdftoref -b -u -f ~/file.pdf\n \
+    pdftoref --url --bibtex --file=~/file.pdf\n \
+    pdftoref -d /home/user/articles "
     
 def listPdfFiles(dir):
+    '''
+    It is the function of the application that get all pdf files in a directory
+    simple seeing if at the end of the files there is .pdf.
+    
+    @param dir: the dir in which search pdf files
+    @return: a list of pdf files
+    '''
     import os
     files = os.listdir(dir)
     pdfFiles = []
