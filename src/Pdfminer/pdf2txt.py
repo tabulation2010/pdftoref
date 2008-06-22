@@ -84,8 +84,12 @@ class TextItem:
   
   def dump(self, outfp, codec):
     def e(x):
-      x = x.replace('&','&amp;').replace('>','&gt;').replace('<','&lt;')
-      return x.encode(codec, 'xmlcharrefreplace')
+      try:
+          x = x.replace('&','&amp;').replace('>','&gt;').replace('<','&lt;')
+          return x.encode(codec, 'xmlcharrefreplace')
+      except AttributeError:
+          return x
+          
     bbox = '%.3f,%.3f,%.3f,%.3f' % self.bbox
     outfp.write('<text font="%s" direction="%s" bbox="%s" size="%.3f">' %
                 (e(self.font.fontname), self.direction, bbox, self.size))
