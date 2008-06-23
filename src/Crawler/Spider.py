@@ -143,7 +143,7 @@ def openUrl(url):
             else:
                 return None
     except urllib2.URLError:
-        print "The url "+url+" is in timeout. Skipping it."
+        print "\n\n\t~ The url "+url+" is in timeout. Skipping it.\n"
         return None
         
 
