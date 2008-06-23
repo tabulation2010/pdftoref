@@ -127,7 +127,7 @@ def getPlainText(document):
                     
                     if len(txt) > 0:
                         if ( x - x_p)  < 0 :           
-                            if ( txt_p.endswith('.') and r.match(txt[0]) <> None ):
+                            if ( txt_p.endswith('.') and r.match(txt) <> None ):
                                 plaintxt+="["+str(j)+"] " +txt
                                 j+=1
                         else:
