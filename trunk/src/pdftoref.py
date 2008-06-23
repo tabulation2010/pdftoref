@@ -89,7 +89,10 @@ def do(content,urlFlag,bibtexFlag):
         ''' getting the text from pdf only concerning References'''
             
         document = Pdf2Txt.getTextFromPdf(content)
+        
+        
         plainText = Extractor.getPlainText(document)
+        
         
         if plainText:
             ''' Try to extract the entries with three type of classification'''
