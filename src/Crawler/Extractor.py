@@ -8,7 +8,7 @@ Here is the defitions of all regular expression used by the extractor for
 entries and titles. Thera are also some statistical constants for the average of the 
 minimum/maximum value of the lenght of entry, estimated from a samples of articles
 '''
-_reQuadre = re.compile('\[[0-9]*[0-9]\]')
+_reQuadre = re.compile('\[[0-9]?[0-9]\]')
 _reElencoPuntato = re.compile('[0-9]?[0-9]\.')
 _rePunto = re.compile("\.")
 _reVirgola = re.compile(",")
@@ -54,7 +54,7 @@ def getPlainText(document):
         reverseText = getText( textListReverse[i].childNodes )
         tmpTxt=  reverseText+ ' ' + tmpTxt
         r = re.compile(_references)
-        m = r.match(tmpTxt)
+        m = r.search(tmpTxt)
         if m:
             ref = m.group()
             spaces=ref.count(" ")
@@ -125,13 +125,11 @@ def getPlainText(document):
                     txt = getText( textList[i].childNodes )
                     x = getValueX(bboxAttr)
                     
-                    if len(txt) > 0:
-                        if ( x - x_p)  < 0 :           
-                            if ( txt_p.endswith('.') and r.match(txt) <> None ):
+                    if (len(txt) > 0) and (x - x_p) < 0 and ( txt_p.endswith('.') ) and ( r.match(txt) <> None ):
                                 plaintxt+="["+str(j)+"] " +txt
                                 j+=1
-                        else:
-                            plaintxt= plaintxt+" "+ txt
+                    else:
+                        plaintxt= plaintxt+" "+ txt
                 return plaintxt.encode('ascii','ignore')
                     
                     
