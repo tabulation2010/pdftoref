@@ -1,4 +1,5 @@
 import getopt
+import sys
 
 def parse(argv):
     '''
@@ -33,6 +34,7 @@ def parse(argv):
             url=True
         elif o in ("-b", "--bibtex"):
             bibtex=True
+            url=True
         else:
             continue
     

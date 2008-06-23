@@ -142,7 +142,7 @@ def openUrl(url):
                 return html
             else:
                 return None
-    except urllib2.URLError:
+    except urllib2.URLError, socket.timeout:
         print "\n\n\t~ The url "+url+" is in timeout. Skipping it.\n"
         return None
         
