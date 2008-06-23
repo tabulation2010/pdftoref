@@ -144,7 +144,7 @@ def do(content,urlFlag,bibtexFlag):
     except IOError:
         print "File not found on filesystem."
         
-    except Pdfminer.pdfparser.PDFValueError:
+    except (Pdfminer.pdfparser.PDFValueError, AssertionError):
         print "Unable to parse the pdf file."
         
     finally:
