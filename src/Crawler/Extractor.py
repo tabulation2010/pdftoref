@@ -86,7 +86,7 @@ def getPlainText(document):
                 j=2
                 r = re.compile(" ?[0-9]?[0-9]\.")
                 for i in range(first+1,lenght):
-                    txt = getText( textList[i].childNodes )
+                    #txt = getText( textList[i].childNodes )
                     #swapping
                     bboxAttr_p = bboxAttr
                     txt_p = txt
