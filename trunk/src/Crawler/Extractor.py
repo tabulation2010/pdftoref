@@ -103,7 +103,7 @@ def getPlainText(document):
                         s = s.replace(".","")
                         s = s.replace(" ","")
                                         
-                    if len(txt) > 0 and (x - x_p < 0) and (m <> None) and int(s)>=j:
+                    if len(txt) > 0 and (x - x_p <= 0) and (m <> None) and int(s)>=j:
                         j=int(s)
                         txt = txt.replace(str(j)+".", "[" + str(j) +"]")
                         plaintxt+=" "+txt
