@@ -1,1 +1,38 @@
 \section{Sviluppo dell'applicativo}
+
+Prova codice python:
+
+
+\begin{lstlisting}[frame=r,caption=Nucleo dell'Applicazione - pdftoref.py ,breaklines=true,basicstyle=\small]{Nucleo dell'Applicazione - pdftoref.py }
+
+def main():
+       
+    (content,flag,urlFlag,bibtexFlag) =  parser.parse(sys.argv)
+    if flag == 'None':
+        parser.usage()
+        sys.exit(2)
+        
+    elif flag == 'file':
+        print("PdftoRef> Running on the file: "+ content)
+        do(content,urlFlag,bibtexFlag)
+
+         
+    elif flag == 'dir':
+        print("PdftoRef> Running on the directory: "+ content)
+        
+        '''Check if the dir under linux finish for \\'''
+        if content[len(content)-1:]<> "/":
+                       content+="/"
+
+        '''Getting the pdf files in the dir'''
+        pdfFiles = parser.listPdfFiles(content)
+        lenght = len(pdfFiles)
+        
+        '''Itering over the files and extract the info one by one'''
+        for each in pdfFiles:
+            print("PdftoRef> Extracting data from file: "+ each)
+            do(content+each,urlFlag,bibtexFlag)
+
+
+
+\end{lstlisting}
