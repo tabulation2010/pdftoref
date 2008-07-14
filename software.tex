@@ -32,19 +32,33 @@ per fare ciò ci siamo basati sui seguenti criteri:
 \end{itemize}
 
 Perciò abbiamo operato una ricerca dal fondo della parola \textit{''Reference''} alla quale abbiamo supposto seguire soltanto il testo relativo alla bibliografia. 
-Un problema pratico che si è affrontato qui è dovuto all'estrazione del testo dal pdf. La parola ''References'' infattiù8'' non è sempre estratta in modo coerente: potrebbe presentarsi come ''Re fe rence'' o ''R e ference'', insomma con degli spazi all'interno. Per ovviare a ciò ci siamo avvalsi delle espressioni regolari in python, uno strumento molto efficacie per la manipolazione e l'analisi del testo.
+Un problema pratico che si è affrontato qui è dovuto all'estrazione del testo dal pdf. La parola ''References'' infattiù'' non è sempre estratta in modo coerente: potrebbe presentarsi come ''Re fe rence'' o ''R e ference'', insomma con degli spazi all'interno. Per ovviare a ciò ci siamo avvalsi delle espressioni regolari in python, uno strumento molto efficacie per la manipolazione e l'analisi del testo.
 
 \\
 [Sottosezione e regressione sulle RegExp con esempio di nostro utilizzo???]
 \\
 
-Un problema invece dovuto alla semplificazione introdotta dalle nostre ipotesi è il seguente: supponendo che la bibliografia sia correttamente individuata con la sola parola \textit{''Reference''}, non è detto che non possa essere seguita da altro testo diverso, come per esempio un'appendice. La nostra analisi per l'estrazioni delle voci bibliografiche è comunque eseguita anche su questo testo aggiuntivo, generando un comportamento inaspettato.
+Un problema invece dovuto alla semplificazione introdotta dalle nostre ipotesi è il seguente: supponendo che la bibliografia sia correttamente individuata con la sola parola \textit{''Reference''}, non è detto che questa non possa essere seguita da altro testo diverso, come per esempio un'appendice. La nostra analisi per l'estrazioni delle voci bibliografiche è eseguita anche su questo testo aggiuntivo, generando un comportamento inaspettato.
 
 
 
 \subsection{Estrazione delle Entries}
+Estratta la parte di testo che riteniamo essere la bibliografia è necessario estrarre da questa le singole voci bibliografiche dette anche entries. Abbiamo visto che in generale si evidenziano tre tipi di formattazione possibili per la bibliografia negli articoli scientifici:
+\begin{itemize}
+ \item enumerazione in cui ciascuna voce ha in testa il valore dell'indice tra parentesi quadre (es. [1])
+ \item enumerazione in cui ciascuna voce ha in testa il valore dell'indice tra parentesi quadre (es.  1.)
+ \item nessun tipo di enumerazione, ciascuna voce è separata delle altre da un accapo
+\end{itemize}
+In particolare scartato ''References'' ci si aspetta che il testo immediatamente successivo sia la prima voce della Bibliografia, in particolare i primi caratteri dovrebbero corrispondere all'indice. E' possibile perciò capire in quale dei tre casi ci troviamo.
+\\
+Se ci troviamo nel primo caso è relativamente facile separare le singole voci bibliografiche basandosi sulle espressioni regolari. Negli altri due casi si cerca dei criteri per ricondursi al precedente.
+\\
+Nel caso dell'enumerazione puntata andiamo a ricercare un numero seguito da un punto. Questo criterio è poco restittivo, poichè si possono presentare nel testo della entry dei numeri seguiti da punto che non sono l'indice. Tenendo però traccia dell'ordine crescente dell'indice, andando a ricercare il valore esatto seguito dal punto e andando a verificare che questo sia preceduto da un accapo il criterio diventa sufficientemente restrittivo. Quindi si sostituisce nel testo all'indice puntato l'indice tra parentesi quadre.
+\\
+Nel caso in cui non ci sia nessun tipo di indice confidiamo sul fatto che le varie entries siano separate da un accapo e da un'eventuale intelinea. Sfruttando le informazioni sulla formattazione offerte dal documento XML ottenuto ricerchiamo la sequenza ordinata ( ''.'' ; ''accapo'' ; ''lettera maiscuola'') per identificare la separazione tra voci bibliografiche diverse. In testa a ciascuna voce inseriamo un indice tra parentesi quadre.
 
 \subsection{Estrazione del titolo}
+Supponendo a questo punto di essere stati in grado di dividere facilmente e in modo corretto le varie entries è necessario per ciascuna di queste estrarre il titolo del riferimento bibliografico. Questo perchè il titolo è l'elemento di maggiore valore per fare una ricerca Web relativa alla risorsa collegata alla entry.  
 
 \subsection{Recupero Risorse Web}
 
