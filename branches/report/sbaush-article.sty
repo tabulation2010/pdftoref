@@ -61,14 +61,14 @@
 \date{}
 
 \def\maketitle{%
- \begingroup
- \newpage
- \global\@topnum\z@ \@maketitle 
- \thispagestyle{myheadings}
- \endgroup
- \setcounter{footnote}{0}
- \let\maketitle\relax
- \let\@maketitle\relax}
+\begingroup
+\newpage
+\global\@topnum\z@ \@maketitle
+\thispagestyle{myheadings}
+\endgroup
+\setcounter{footnote}{0}
+\let\maketitle\relax
+\let\@maketitle\relax}
 \def\@maketitle
 %intestazione della relazione
 {\newpage
@@ -76,37 +76,37 @@
 % }
 \begin{center}
 \Large \class \\ \large\date
-\end{center}  
+\end{center}
 
 
 {\begin{center}
 
- \LARGE\title              
-\end{center}} 
+\LARGE\title
+\end{center}}
 \vskip .7em
 
 
 \begin{minipage}[t]{0.5\textwidth}
- \large\textbf{Docente:} \\ \large \professor \\
+\large\textbf{Docente:} \\ \large \professor \\
 %\large\textbf{Assistenti:} \\ \large \firstassistant \\ \large \secondassistant
-\end{minipage} 
+\end{minipage}
 \hfill
 \begin{minipage}[t]{0.5\textwidth}
 \begin{flushright}
-\large\textbf{Autori:} \\ \large\firstauthor \\ \large\secondauthor \\ \large\thirdauthor
+\large\textbf{Autori:} \\ \large\firstauthor \\ \large\secondauthor %\\ \large\thirdauthor
 \end{flushright}
 
-\end{minipage} 
+\end{minipage}
 
 \vskip .7em
-\hrule height0.1pt 
- \par
- \vskip .7em} 
+\hrule height0.1pt
+\par
+\vskip .7em}
 
-%  \def\section{\@startsection {section}{1}{\z@}{-3.0ex plus -.6ex minus 
-%      -.2ex}{1.3ex plus .1ex}{\dunhb}}
-%  \def\subsection{\@startsection{subsection}{2}{\z@}{-1.6ex plus -.5ex minus 
-%     -.1ex}{0.9ex plus .1ex}{\dunha}}
+% \def\section{\@startsection {section}{1}{\z@}{-3.0ex plus -.6ex minus
+% -.2ex}{1.3ex plus .1ex}{\dunhb}}
+% \def\subsection{\@startsection{subsection}{2}{\z@}{-1.6ex plus -.5ex minus
+% -.1ex}{0.9ex plus .1ex}{\dunha}}
 
 %%%%%% intestazioni delle pagine
 \def\foottext{\begin{footnotesize}\title \hfill\textbf\thepage\end{footnotesize}}
@@ -126,8 +126,8 @@
 \newcommand{\figref}[1]{Figura~\ref{#1}}
 \newcommand{\tabref}[1]{Tabella~\ref{#1}}
 \newcommand{\exref}[1]{Esercizio~\ref{#1}}
-\newcommand{\partref}[1]{Parte~\ref{#1}} 
-\newcommand{\appref}[1]{Appendice~\ref{#1}} 
+\newcommand{\partref}[1]{Parte~\ref{#1}}
+\newcommand{\appref}[1]{Appendice~\ref{#1}}
 \newcommand{\sideref}[1]{commento a margine intitolato #1}
 \newcommand{\pgref}[1]{pagina~\pageref{#1}}
 
@@ -204,6 +204,7 @@
 \setlength{\marginwidth}{\marginparwidth}
 \addtolength{\marginwidth}{\marginparsep}
 
+
 \newlength{\savelineskip}
 \newcommand{\term}[1]{{\bfseries #1}}
 \newcommand{\newterm}[1]{%
@@ -217,7 +218,7 @@
 \marginpar{%
 \raisebox{0pt}[0pt][0pt]{\parbox[c]{\marginparwidth}{\begin{flushleft} {\nt \uppercase{#1}}%
 \setlength{\baselineskip}{\marginlineskip}%
-\end{flushleft}}}}% 
+\end{flushleft}}}}%
 \setlength{\baselineskip}{\savelineskip}%
 }
 
@@ -227,21 +228,20 @@
 
 \def\mdw@dots#1{\ensuremath{\mathpalette\mdw@dots@i{#1}}}
 \def\mdw@dots@i#1#2{%
-  \setbox\z@\hbox{$#1\mskip1.8mu$}%
-  \dimen@\wd\z@%
-  \setbox\z@\hbox{$#1.$}%
-  #2%
+\setbox\z@\hbox{$#1\mskip1.8mu$}%
+\dimen@\wd\z@%
+\setbox\z@\hbox{$#1.$}%
+#2%
 }
 \def\Ddots{%
-  \mdw@dots{\mathinner{%
-    \mkern1mu%
-    \raise\dimen@\vbox{\kern7\dimen@\copy\z@}%
-    \mkern2mu%
-    \raise4\dimen@\copy\z@%
-    \mkern2mu%
-    \raise7\dimen@\box\z@%
-    \mkern1mu%
-  }}%
+\mdw@dots{\mathinner{%
+\mkern1mu%
+\raise\dimen@\vbox{\kern7\dimen@\copy\z@}%
+\mkern2mu%
+\raise4\dimen@\copy\z@%
+\mkern2mu%
+\raise7\dimen@\box\z@%
+\mkern1mu%
+}}%
 }
- \usepackage{graphicx}
- 
+\usepackage{graphicx}
