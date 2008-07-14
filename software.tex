@@ -1,38 +1,70 @@
 \section{Sviluppo dell'applicativo}
 
+
+L'applicativo è stato realizzato per mezzo di scripting python, su sistema operativo GNU/Linux. Si è trattato con buoni risultati i casi più diffusi di bibliografia che utilizzano una struttura standard benformata per elencare le varie voci. Si è riusciti a trattare con risultati sufficienti anche i casi in cui la bibliografia non segue una regola predefinita.
+
+Estratta la bibliografia sono state implementate delle funzioni che effettuano richieste http per recuperare la Url di una risorsa Web correlata alla voce della bibliografia. 
+
+Infine sono state sviluppate delle funzioni che costruiscono un file HTML contenente tutte le voci della bibliografia con il relativo link remoto. Questo file è l' output del programma.
+
+\subsection{Estrazione Testo Pdf}
+Il primo problema che si presenta nell'estrazione di dati dai file Pdf è l'estrazione del testo. Pdf è un formato di stampa e talvolta tratta il testo alla stregua di immagini. Non è facile perciò ottenere un testo piano da un file Pdf. Tuttavia sono presenti un numero di tools e librerie che svolgono questa funzione in modo più o meno appropriato, a seconda delle esigenze dell'utente. Ci sono dei tools che dato un file pdf estraggono un file XML che contiene oltre al testo la descrizione della formattazione del documento. 
+In particolare noi abbiamo testato tre strumenti diversi:
+\begin{itemize}
+ \item \textit{pdftohtml} è un applicativo freeware in dotazione con la shell di linux per la conversione di un file pdf in html o xml.
+ \item \textit{PyPdf} è una libreria python utile per la manipolazione di documenti pdf, estrae testo semplice.
+ \item \textit{PDFMiner} è una suite di programmi sviluppata completamente in python, scritta da Yusuke Shinyama, che implementa funzionalità di estrazione testo e formattazione da files pdf. In particolare da' la possibilità di ottenere un file Xml equivalente al pdf.
+\end{itemize}
+
+La nostra scelta è caduta sulla suite PDFMiner perchè è scritta completamente in python e perciò meglio integrabile col nostro progetto, perchè è funzionale per i nostri obiettivi e perchè di semplice applicazione pratica.
+In particolare PDFMiner offre la funzione \textit{''getTextFromPdf(PdfFile)''} che ritorna un documento XML benformato di questo tipo:
+
+[QUI CI METTEREI UN ESEMPIO DEL DOCUMENTO XML EQUIVALENTE AL PDF ESTRATTO]
+
+
+\subsection{Ricerca References}
+
+Ottenuto il file XML è necessario operare una ricerca nel testo per selezionare il testo realtivo alla bibliografia.
+per fare ciò ci siamo basati sui seguenti criteri:
+\begin{itemize}
+ \item Negli articoli in inglese la bibliografia inizia sempre con la parola \textit{''Reference''} o \textit{''References''}.
+ \item Negli articoli in inglese la bibliografia si trova sempre nella parte finale.
+\end{itemize}
+
+Perciò abbiamo operato una ricerca dal fondo della parola \textit{''Reference''} alla quale abbiamo supposto seguire soltanto il testo relativo alla bibliografia. 
+Un problema pratico che si è affrontato qui è dovuto all'estrazione del testo dal pdf. La parola ''References'' infattiù8'' non è sempre estratta in modo coerente: potrebbe presentarsi come ''Re fe rence'' o ''R e ference'', insomma con degli spazi all'interno. Per ovviare a ciò ci siamo avvalsi delle espressioni regolari in python, uno strumento molto efficacie per la manipolazione e l'analisi del testo.
+
+\\
+[Sottosezione e regressione sulle RegExp con esempio di nostro utilizzo???]
+\\
+
+Un problema invece dovuto alla semplificazione introdotta dalle nostre ipotesi è il seguente: supponendo che la bibliografia sia correttamente individuata con la sola parola \textit{''Reference''}, non è detto che non possa essere seguita da altro testo diverso, come per esempio un'appendice. La nostra analisi per l'estrazioni delle voci bibliografiche è comunque eseguita anche su questo testo aggiuntivo, generando un comportamento inaspettato.
+
+
+
+\subsection{Estrazione delle Entries}
+
+\subsection{Estrazione del titolo}
+
+\subsection{Recupero Risorse Web}
+
+
 Prova codice python:
 
 
 \begin{lstlisting}[frame=r,caption=Nucleo dell'Applicazione - pdftoref.py ,breaklines=true,basicstyle=\small]{Nucleo dell'Applicazione - pdftoref.py }
 
-def main():
-       
-    (content,flag,urlFlag,bibtexFlag) =  parser.parse(sys.argv)
-    if flag == 'None':
-        parser.usage()
-        sys.exit(2)
-        
-    elif flag == 'file':
-        print("PdftoRef> Running on the file: "+ content)
-        do(content,urlFlag,bibtexFlag)
+''' Si estrae il testo dal Pdf in formato XML '''
+document = Pdf2Txt.getTextFromPdf(content)
 
-         
-    elif flag == 'dir':
-        print("PdftoRef> Running on the directory: "+ content)
-        
-        '''Check if the dir under linux finish for \\'''
-        if content[len(content)-1:]<> "/":
-                       content+="/"
+''' Si estrae la bibliografia dal file XML come testo semplice '''
+plainText = Extractor.getPlainText(document)
 
-        '''Getting the pdf files in the dir'''
-        pdfFiles = parser.listPdfFiles(content)
-        lenght = len(pdfFiles)
-        
-        '''Itering over the files and extract the info one by one'''
-        for each in pdfFiles:
-            print("PdftoRef> Extracting data from file: "+ each)
-            do(content+each,urlFlag,bibtexFlag)
-
-
+if plainText:
+	''' Si cerca di estrarre le varie voci della bibliografia '''
+	entries = Extractor.entriesExtractor(plainText)
+	if entries:
+		''' Si scrive ciascuna entry in un file HTML col relativo collegamento '''
+		HtmlWriter.write(entries,titles,content,urlFlag,bibtexFlag)
 
 \end{lstlisting}
