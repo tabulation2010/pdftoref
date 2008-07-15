@@ -1,10 +1,10 @@
 \section{Sviluppo dell'applicativo}
 
-L'applicativo è stato realizzato per mezzo di scripting python, su sistema operativo GNU/Linux. Si è trattato con buoni risultati i casi più diffusi di bibliografia che utilizzano una struttura standard benformata per elencare le varie voci. Si è riusciti a trattare con risultati sufficienti anche i casi in cui la bibliografia non segue una regola predefinita.
+L'applicativo è stato realizzato per mezzo di scripting python, su sistema operativo GNU/Linux, in particolare sotto la versione Ubuntu Linux 8.04. Si è trattato con buoni risultati i casi più diffusi di bibliografia che utilizzano una struttura standard benformata per elencare le varie voci. Si è riusciti a trattare con risultati sufficienti anche i casi in cui la bibliografia non segue una regola predefinita.
 
-Estratta la bibliografia sono state implementate delle funzioni che effettuano richieste http per recuperare la Url di una risorsa Web correlata alla voce della bibliografia. 
+Estratta la bibliografia sono state implementate delle funzioni che effettuano richieste SOAP al WebService di Google \cite{GWS} tramite implementazione proxy in python \cite{ibm-py-ws} per recuperare la Url di una risorsa Web a maggiore ranking, correlata alla voce della bibliografia. 
 
-Infine sono state sviluppate delle funzioni che costruiscono un file HTML contenente tutte le voci della bibliografia con il relativo link remoto.
+Infine sono state sviluppate delle funzioni che costruiscono un file HTML contenente tutte le voci della bibliografia con il relativo link remoto e l'eventuale BibTex estratto dalla pagina HTML della risorsa remote come ad esempio CiteSeer, Portal ACME etc.
 
 \begin{lstlisting}[frame=r,caption=Nucleo dell'Applicazione - pdftoref.py ,breaklines=true,basicstyle=\small]{Nucleo dell'Applicazione - pdftoref.py }
 
@@ -24,16 +24,16 @@ if plainText:
 \end{lstlisting}
 
 \subsection{Estrazione Testo Pdf}
-Il primo problema che si presenta nell'estrazione di dati dai file Pdf è l'estrazione del testo. Pdf è un formato di stampa e talvolta tratta il testo alla stregua di immagini. Non è facile perciò ottenere un testo piano da un file Pdf. Tuttavia sono presenti un numero di tools e librerie che svolgono questa funzione in modo più o meno appropriato, a seconda delle esigenze dell'utente. Ci sono dei tools che dato un file pdf estraggono un file XML che contiene oltre al testo la descrizione della formattazione del documento. 
-In particolare noi abbiamo testato tre strumenti diversi:
+Il primo problema che si presenta nell'estrazione di dati dai file Pdf è l'estrazione del testo. Pdf è un formato di stampa e talvolta tratta il testo alla stregua di immagini. Non è facile perciò ottenere un \textit{clear plain text} da un file Pdf. Tuttavia sono presenti un numero di tools e librerie che svolgono questa funzione in modo più o meno appropriato, a seconda delle esigenze dell'utente. Ci sono dei tools che dato un file pdf estraggono un file XML che contiene oltre al testo la descrizione della formattazione del documento. 
+In particolare si è analizzato e testato tre strumenti diversi:
 \begin{itemize}
- \item \textit{pdftohtml} è un applicativo freeware in dotazione con la shell di linux per la conversione di un file pdf in html o xml.
+ \item \textit{pdftohtml} è un applicativo, distribuito come \textit{free software}, a linea di comando in dotazione con praticamente qualsiasi distribuzione GNU/Linux. E' utile per la conversione di un file pdf in html o xml e abbstanza veloce in quanto scritto in C++.
  \item \textit{PyPdf} è una libreria python utile per la manipolazione di documenti pdf, estrae testo semplice.
- \item \textit{PDFMiner} è una suite di programmi sviluppata completamente in python, scritta da Yusuke Shinyama, che implementa funzionalità di estrazione testo e formattazione da files pdf. In particolare da' la possibilità di ottenere un file Xml equivalente al pdf.
+ \item \textit{PDFMiner} è una suite di programmi sviluppata completamente in python, scritta da Yusuke Shinyama, che implementa funzionalità di estrazione testo e formattazione da files pdf. In particolare fornisce la possibilità di ottenere un file xml equivalente al pdf.
 \end{itemize}
 
-La nostra scelta è caduta sulla suite PDFMiner perchè è scritta completamente in python e perciò meglio integrabile col nostro progetto, perchè è funzionale per i nostri obiettivi e perchè di semplice applicazione pratica.
-In particolare PDFMiner offre la funzione \textit{''getTextFromPdf(PdfFile)''} che ritorna un documento XML benformato di questo tipo:
+Sottolineando che si è ricercato tutti strumenti al limite con una licenza opensource\footnote{ricordarsi di citare i siti di questi progetti}, la scelta è infine caduta sulla suite PDFMiner perchè è scritta completamente in python e perciò meglio integrabile col nostro progetto, perchè è funzionale per i nostri obiettivi e perchè di semplice applicazione pratica.
+In particolare PDFMiner offre un interfaccia python direttamente integrabile con altro software python, in queso senso la scelta è anche ricaduta su questo tool poichè ha permesso un numero esiguo di modifiche al codice: in pratica solo la creazione di un file di binding tra il tool e l'applicativo pdftoref. La funzione di binding prende il nome \textit{``getTextFromPdf(PdfFile)''} e ritorna un documento XML benformato di questo tipo:
 
 \begin{lstlisting}[frame=r,caption=Esempio di XML relativo a documento PDF ,breaklines=true,basicstyle=\small]{Esempio di XML relativo a documento PDF}
 <document>
@@ -55,16 +55,16 @@ In particolare PDFMiner offre la funzione \textit{''getTextFromPdf(PdfFile)''} c
 Ottenuto il file XML è necessario operare una ricerca nel testo per selezionare il testo relativo alla bibliografia.
 Per fare ciò ci siamo basati sui seguenti criteri:
 \begin{itemize}
- \item Negli articoli in inglese la bibliografia inizia sempre con la parola \textit{''Reference''} o \textit{''References''}.
+ \item Negli articoli in inglese la bibliografia inizia sempre con la parola \textit{``Reference''} o \textit{``References''}.
  \item Negli articoli in inglese la bibliografia si trova sempre nella parte finale.
 \end{itemize}
 
-Perciò abbiamo operato una ricerca dal fondo della parola \textit{''Reference''} alla quale abbiamo supposto seguire soltanto il testo relativo alla bibliografia. 
-Un problema pratico che si è affrontato qui è dovuto all'estrazione del testo dal pdf. La parola ''References'' infattiù'' non è sempre estratta in modo coerente: potrebbe presentarsi come ''Re fe rence'' o ''R e ference'', insomma con degli spazi all'interno. Per ovviare a ciò ci siamo avvalsi delle espressioni regolari in python, uno strumento molto efficacie per la manipolazione e l'analisi del testo.
+Perciò abbiamo operato una ricerca dal fondo della parola \textit{``Reference''} alla quale abbiamo supposto seguire soltanto il testo relativo alla bibliografia. 
+Un problema pratico che si è affrontato qui è dovuto all'estrazione del testo dal pdf. La parola ''References'' infatti'' non è sempre estratta in modo coerente: potrebbe presentarsi come ''Re fe rence'' o ``R e ference'', insomma con degli spazi all'interno. Per ovviare a ciò ci siamo avvalsi delle\textbf{ espressioni regolari} in python, uno strumento molto efficacie per la manipolazione e l'analisi del testo.
 
 
 \begin{subsubsection}{Espressioni Regolari}
- Le espressioni regolari (in inglese regular expression, che può trovarsi abbreviata in regexp, regex o RE) sono sintassi attraverso le quali si possono rappresentare insiemi di stringhe. Gli insiemi caratterizzabili con espressioni regolari sono anche detti linguaggi regolari (e coincidono quelli generabili dalle grammatiche regolari e riconoscibili dagli automi a stati finiti). Le espressioni regolari sono composte da costanti e operatori che denotano insiemi di stringhe, e da operazioni tra questi insiemi. Le espressioni regolari sono utilizzate principalmente da editor di testo per la ricerca e la sostituzione di porzioni del testo. Grande importanza rivestono inoltre nell'informatica teorica, nella quale, ad esempio, sono utilizzate per rappresentare tutti i possibili cammini su un grafo.
+ Le espressioni regolari (in inglese regular expression, che può trovarsi abbreviata in regexp, regex o RE) sono grammatiche di tipo 3, cioè della tipologia più semplice. Sono uno strumento molto potente e abbastanza flessibile con cui si possono rappresentare un insiemi di stringhe. Gli insiemi caratterizzabili con espressioni regolari sono anche detti linguaggi regolari (e coincidono quelli generabili dalle grammatiche regolari e riconoscibili dagli automi a stati finiti). Le espressioni regolari sono composte da costanti e operatori che denotano insiemi di stringhe, e da operazioni tra questi insiemi. Le espressioni regolari sono utilizzate principalmente da editor di testo per la ricerca e la sostituzione di porzioni del testo. Grande importanza rivestono inoltre nell'informatica teorica, nella quale, ad esempio, sono utilizzate per rappresentare tutti i possibili cammini su un grafo.
 
 Le espressioni regolari operano sulle stringhe, e le stringhe più semplici sono costituite da singoli caratteri. La maggior parte dei caratteri corrisponde semplicemente a se stessa, quindi a corrisponderà alla stringa "a" (circa la discriminazione tra maiuscolo e minuscolo si veda la sezione opzioni più avanti), stessa cosa per una stringa costituita da caratteri ordinari, come a esempio spam.
 
@@ -96,25 +96,25 @@ m = r.search(tmpTxt)
 
 \end{subsubsection}
 
-Un problema invece dovuto alla semplificazione introdotta dalle nostre ipotesi è il seguente: supponendo che la bibliografia sia correttamente individuata con la sola parola \textit{''Reference''}, non è detto che questa non possa essere seguita da altro testo diverso, come per esempio un'appendice. La nostra analisi per l'estrazioni delle voci bibliografiche è eseguita anche su questo testo aggiuntivo, generando un comportamento inaspettato.
+Un problema invece dovuto alla semplificazione introdotta dalle nostre ipotesi è il seguente: supponendo che la bibliografia sia correttamente individuata con la sola parola \textit{``Reference''}, non è detto che questa non possa essere seguita da altro testo diverso, come per esempio un'appendice. La nostra analisi per l'estrazioni delle voci bibliografiche è eseguita anche su questo testo aggiuntivo, generando un comportamento inaspettato, che comunque può essere semplicemente filtrato da una semplice interazione dell'utente.
 
 \subsection{Estrazione delle Entries}
-Estratta la parte di testo che riteniamo essere la bibliografia è necessario estrarre da questa le singole voci bibliografiche dette anche entries. Abbiamo visto che in generale si evidenziano tre tipi di formattazione possibili per la bibliografia negli articoli scientifici:
+Estratta la parte di testo che riteniamo essere la bibliografia è necessario estrarre da questa le singole voci bibliografiche dette anche \textit{entries}. Abbiamo visto che in generale si evidenziano tre tipi di formattazione possibili per la bibliografia negli articoli scientifici:
 \begin{itemize}
  \item enumerazione in cui ciascuna voce ha in testa il valore dell'indice tra parentesi quadre (es. [1])
  \item enumerazione in cui ciascuna voce ha in testa il valore dell'indice tra parentesi quadre (es.  1.)
  \item nessun tipo di enumerazione, ciascuna voce è separata delle altre da un accapo
 \end{itemize}
-In particolare scartato ''References'' ci si aspetta che il testo immediatamente successivo sia la prima voce della Bibliografia, in particolare i primi caratteri dovrebbero corrispondere all'indice. E' possibile perciò capire in quale dei tre casi ci troviamo.
+In particolare scartato ``References'' ci si aspetta che il testo immediatamente successivo sia la prima voce della Bibliografia, in particolare i primi caratteri dovrebbero corrispondere all'indice. E' possibile perciò capire in quale dei tre casi ci troviamo.
 \\
 Se ci troviamo nel primo caso è relativamente facile separare le singole voci bibliografiche basandosi sulle espressioni regolari. Negli altri due casi si cerca dei criteri per ricondursi al precedente.
 \\
 Nel caso dell'enumerazione puntata andiamo a ricercare un numero seguito da un punto. Questo criterio è poco restittivo, poichè si possono presentare nel testo della entry dei numeri seguiti da punto che non sono l'indice. Tenendo però traccia dell'ordine crescente dell'indice, andando a ricercare il valore esatto seguito dal punto e andando a verificare che questo sia preceduto da un accapo il criterio diventa sufficientemente restrittivo. Quindi si sostituisce nel testo all'indice puntato l'indice tra parentesi quadre.
 \\
-Nel caso in cui non ci sia nessun tipo di indice confidiamo sul fatto che le varie entries siano separate da un accapo e da un'eventuale intelinea. Sfruttando le informazioni sulla formattazione offerte dal documento XML ottenuto ricerchiamo la sequenza ordinata [ \textit{''.''} ; \textit{''accapo''} ; \textit{''lettera maiscuola''}] per identificare la separazione tra voci bibliografiche diverse. In testa a ciascuna voce inseriamo un indice tra parentesi quadre.
+Nel caso in cui non ci sia nessun tipo di indice confidiamo sul fatto che le varie entries siano separate da un accapo e da un'eventuale interlinea. Sfruttando le informazioni sulla formattazione offerte dal documento XML ottenuto ricerchiamo la sequenza ordinata [ \textit{``.''} ; \textit{``accapo''} ; \textit{``lettera maiscuola''}] per identificare la separazione tra voci bibliografiche diverse. In testa a ciascuna voce inseriamo un indice tra parentesi quadre.
 
 \subsection{Estrazione del titolo}
-Supponendo a questo punto di essere stati in grado di dividere facilmente e in modo corretto le varie entries è necessario per ciascuna di queste estrarre il titolo del riferimento bibliografico. Questo perchè il titolo è l'elemento di maggiore rilevanza per fare una ricerca Web collegata alla entry. Osservando la struttura delle varie bibliografie in nostro possesso abbiamo potuto verificare una certa regolarità nell'ordine degli elementi presenti in ciascuna entry.
+Supponendo a questo punto di essere stati in grado di dividere facilmente e in modo corretto le varie \textit{entries} è necessario per ciascuna di queste estrarre il titolo del riferimento bibliografico. Questo perchè il titolo è l'elemento di maggiore rilevanza per fare una ricerca Web collegata alla entry. Osservando la struttura delle varie bibliografie in nostro possesso abbiamo potuto verificare una certa regolarità nell'ordine degli elementi presenti in ciascuna entry.
 \\
 Nell'ordine compaiono:
 \begin{itemize}
@@ -128,10 +128,11 @@ Nell'ordine compaiono:
 Tutti questi singoli sottoelementi della Entry sono separati tra loro in modo ambivalente o dal simbolo punto o dal simbolo virgola. Di fatto facendo una divisione della stringa basandosi su questi due simboli è possibile estrarre i singoli elementi. Fatto ciò è stato necessario trovare un criterio per selezionare tra tutti il titolo.
 Poichè il titolo è di solito immediatamente successivo all'elenco degli autori e sfruttando il fatto che questo è sempre molto più lungo del nome di un autore, abbiamo definito la seguente regola:
 \\
-\textit{''E' scelto come titolo la prima stringa estratta che presenta una sufficiente differenza di lunghezza dalla precendete''}
+\textit{``E' scelto come titolo la prima stringa estratta che presenta una sufficiente differenza di lunghezza dalla precendete''}
 \\
 
-Un problema è stimare la giusta soglia per giudicare la differenza sufficiente. Un'indagine statistica ci ha aiutato nel trovare una stima appropriata.
+%Un problema è stimare la giusta soglia per giudicare la differenza sufficiente. Un'indagine statistica ci ha aiutato nel trovare una stima appropriata.
+\begin{center}(Altro zampino mio - Questo lo spiego io marto. Lo raffino e ci metto un immagine.)\end{center}
 
 In linea di massima questo criterio funziona fintanto che il titolo a sua volta non contiene altre virgole o punti, altrimenti è spezzato in sottostringhe di dimensione ridotta.
 
