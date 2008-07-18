@@ -145,7 +145,7 @@ In questo caso, ponendo $ \delta  =   (bbox_{i-1}[0] - bbox_{i}[0] ) $, si ha $ 
 
 
 \subsection{Estrazione del titolo}
-Supponendo a questo punto di essere stati in grado di dividere facilmente e in modo corretto le varie \textit{entries} è necessario per ciascuna di queste estrarre il titolo del riferimento bibliografico. Questo perchè il titolo è l'elemento di maggiore rilevanza per fare una ricerca Web collegata alla entry. Osservando la struttura delle varie bibliografie in nostro possesso abbiamo potuto verificare una certa regolarità nell'ordine degli elementi presenti in ciascuna entry.
+Supponendo a questo punto di essere stati in grado di dividere facilmente e in modo corretto le varie \textit{entries} è necessario per ciascuna di queste estrarre il titolo del riferimento bibliografico. Questo perchè il titolo è l'elemento di maggiore rilevanza per fare una ricerca web collegata alla entry. Osservando la struttura delle varie bibliografie in nostro possesso abbiamo potuto verificare una certa regolarità nell'ordine degli elementi presenti in ciascuna entry.
 \\
 Nell'ordine compaiono:
 \begin{itemize}
@@ -156,17 +156,55 @@ Nell'ordine compaiono:
  \item Numero di pagine
 \end{itemize}
 
-Tutti questi singoli sottoelementi della Entry sono separati tra loro in modo ambivalente o dal simbolo punto o dal simbolo virgola, a seconda dal \textit{template} usato per generare la bibliografia. Di fatto facendo una divisione della stringa basandosi su questi due simboli è possibile estrarre i singoli elementi. Fatto ciò è stato necessario trovare un criterio per selezionare tra tutti il titolo.
-Poichè il titolo è di solito immediatamente successivo all'elenco degli autori e sfruttando il fatto che questo è sempre molto più lungo del nome di un autore, abbiamo definito la seguente regola:
-\\
-\textit{``E' scelto come titolo la prima stringa estratta che presenta una sufficiente differenza di lunghezza dalla precendete''}
-\\
+Tutti questi singoli sottoelementi della entry sono separati tra loro in modo ambivalente o dal simbolo punto o dal simbolo virgola, a seconda dal \textit{template} usato per generare la bibliografia. Di fatto facendo una divisione della stringa basandosi su questi due simboli è possibile estrarre i singoli elementi. Fatto ciò è stato necessario trovare un criterio per selezionare tra tutti il titolo.
+Poichè il titolo è di solito immediatamente successivo all'elenco degli autori e sfruttando il fatto che questo è sempre molto più lungo del nome di un autore, abbiamo definito la seguente euristica:\\
+
+
+\textit{``E' scelto come titolo la prima stringa estratta che presenta una sufficiente differenza di lunghezza dalla precendete''}\\
+
+Ovviamente questa idea di base non è immediatamente implementabile perchè non è dato sapere a priori il sufficiente scostamento tra un generico titolo e la lunghezza degli autori; inoltre questo scarto può variare da voce a voce quindi non è concepibile realizzare la suddetta regola come controlla sulla lunghezza delle stringhe,non avendo un valore di riferimento.\\
+L'approccio seguito quindi si basa su un confronto relativo, non assoluto, sulla prima stringa che risulta diversa dalla media della lunghezza delle stringhe. Si suppone che il titolo non contenga ne virgole ne punti, ma può contenere ad esempio punti e virgola ``;'' e due punti ``:''. Si divide ogni parte della voce bibliografica sia sulle virgole che sui punti, come accennato precedentmente, lasciando invariata la stringa del titolo. A questo punto si è ottenuto una lista di sottostringe, in cui ogni elemento è chiamato $x_i$. \'E calcolata la lunghezza in termini di caratteri di ogni sottostringa indicata da $|x_i|$; infine è fatta la media $\frac{\sum_i |xi|}{\sum_i 1}$. Successivamente la lista viene di nuovo scorsa cercando il primo valore che ha un rapporto: $ \frac{|x_i|}{ \sum_i |x_i|} \gg 1 $. Questo significa che questo è il primo elemento che produce un ampio scostamento nel numero di caratteri rispetto al valore medio; poichè spesso i titolo è una stringa lunga e che non è divisa nè da ``.'' nè ``,'' ed è preceduta da nomi di autori divisi dai delimitatori che contribuiranno a far rimanere la media molto bassa, allora è possibile dare una formulazione implementabile della suddetta euristica: il titolo è l'elemento $x_i$ nella lista creata tale che $ \frac{|x_i|}{ \sum_i |x_i|} \gg 1 $ come mostrato di seguito in questo esempio sulla voce seguente:\\
+
+
+\textit{F.Kimura, K.Takashina, S.Tsuruoka, and Y.Miyake, \textsc{Modified quadratic discriminant functions and the application to Chinese character recognition}, IEEE Transactions on Pattern Analysis and Machine Intelligence , Vol.9, No.1, pp.149-153,1987. }\\
+
+La lista risultante con i relativi valori è rappresentata dalla tabella \ref{tab:title} da cui si evince che ovviamente il titolo risuta $x_i$ tale per cui $ \frac{|x_i|}{ \sum_i |x_i|} \gg 1 $ e cioè:
+
+$ x_9= $ \textit{Modified quadratic discriminant functions and the application to Chinese character recognition}\\
+
+che porta al confronto $97/12 \gg 1$.
+
+\begin{table}\label{tab:title}
+\begin{center}
+\begin{tabular}{l|l|l|l}
+	\#  & Valore nella sottostringa $x_i$ & Lunghezza $|x_i|$ & Media $  \sum_i |x_i|$ \\
+	1 & \_F & 2 & 12 \\
+	2 & Kimura & 6 & 12 \\
+	3 & \_K & 2 & 12 \\
+	4 & Takashina & 9 & 12 \\
+	5 & \_S & 2 & 12 \\
+	6 & Tsuruoka & 8 & 12 \\
+	7 & \_and Y & 6 & 12 \\
+	8 & Miyake & 6 & 12 \\
+	9 & \begin{scriptsize}Modified quadratic discriminant functions and the  application to Chinese character recognition\end{scriptsize} & \textbf{97} & 12 \\
+\end{tabular}
+\caption{Rappresentazione tabellare dei confronti che pdftoref esegue per estrarre il titolo a maggior distacco dalla media.\'E importante dire che i valori successivi della voce non sono riportati in quanto si prende sempre il primo valore che verifica l'euristica, interrompendo il subito il \textit{loop}.}
+\label{label}
+\end{center}
+\end{table}
+
+
+
 
 %Un problema è stimare la giusta soglia per giudicare la differenza sufficiente. Un'indagine statistica ci ha aiutato nel trovare una stima appropriata.
-\begin{center}(Altro zampino mio - Questo lo spiego io marto. Lo raffino e ci metto un immagine.)\end{center}
 
-In linea di massima questo criterio funziona fintanto che il titolo a sua volta non contiene altre virgole o punti, altrimenti è spezzato in sottostringhe di dimensione ridotta.
+
+
+
+In linea di massima questo criterio funziona fintanto che il titolo a sua volta non contiene altre virgole o punti, altrimenti è spezzato in sottostringhe di dimensione ridotta e le ipotesi che si sono fatte saltano. La funzione che realizza questo è \textit{``def titleExtractor(listOfEntries):''}
 
 
 \subsection{Recupero Risorse Web}
-[Iac Qui c'è il tuo zampino ho bisogno di Spiegazioni]
+
+Come già citato nell'introduzione (sezione \ref{intro}) una volta separata ogni voce della bibliografia e ogni titolo con il metodo suddetto, si è implementato delle funzioni per cercare informazioni riguardo a quell'articolo citato identificato dal titolo. La soluzione scelta è stata quella di fare delle query al WebService di Google in maniera tale da realizzare una vera e propria ricerca sul famoso motore al fine di reperire l'indirizzo che indentifica l'articolo in rete a massimo ranking.
+
