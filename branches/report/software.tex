@@ -2,16 +2,16 @@
 
 L'applicativo è stato realizzato per mezzo di scripting python \cite{pydoc}, su sistema operativo GNU/Linux, in particolare sotto la versione Ubuntu Linux 8.04. Si è trattato con buoni risultati i casi più diffusi di bibliografia che utilizzano una struttura standard benformata per elencare le varie voci. Si è riusciti a trattare con risultati sufficienti anche i casi in cui la bibliografia non segue una regola predefinita.
 
-Estratta la bibliografia sono state implementate delle funzioni che effettuano richieste SOAP al WebService di Google \cite{GWS} tramite implementazione proxy in python \cite{ibm-py-ws} per recuperare la Url di una risorsa Web a maggiore ranking, correlata alla voce della bibliografia. 
+Estratta la bibliografia sono state implementate delle funzioni che effettuano richieste SOAP al WebService di Google \cite{GWS} per mezzo di proxy in python \cite{ibm-py-ws} utili a recuperare la Url della risorsa Web con maggiore ranking, correlata alla voce bibliografica. 
 
 Infine sono state sviluppate delle funzioni che costruiscono un file HTML contenente tutte le voci della bibliografia con il relativo link remoto e l'eventuale BibTex estratto dalla pagina HTML della risorsa remote come ad esempio CiteSeer, Portal ACME etc.
 
 In figura sottostante sono riportati i passi princiapli dello script che vengono eseguiti:
 \begin{enumerate}
-	\item Estrazione del testo tramite PdfMiner che fornisce dal PDF un file XML
-	\item Implementazione dell'euristiche basate su espressioni regolari per localizzare la bibliografia e estrarre le voci
-	\item Estrazione dei titoli da ogni voce
-	\item Scrittura del file html con l'eventuale ricerca via  Google webservice. Queste opzioni di ricerca si possono abilitare o meno, tramite parametri all'applicativo
+	\item Estrazione del testo
+	\item Implementazione dell'euristiche basate su espressioni regolari per localizzare la bibliografia ed estrarre le voci
+	\item Estrazione dei titoli
+	\item Scrittura del file html con l'eventuale ricerca via webservice. 
 \end{enumerate}
 
 
@@ -33,7 +33,7 @@ if plainText:
 \end{lstlisting}
 
 \subsection{Estrazione Testo Pdf}
-Il primo problema che si presenta nell'estrazione di dati dai file Pdf è l'estrazione del testo. Pdf è un formato di stampa e talvolta tratta il testo alla stregua di immagini o in alcuni casi descrive le lettere di una solita parola in maniera diversa dalle altre per ottenere un buon risultato di stampa, ma un risultato pessimo nell'analisi del testo. Non è facile perciò ottenere un \textit{clear plain text} da un file Pdf. Tuttavia sono presenti un numero di tools e librerie che svolgono questa funzione in modo più o meno appropriato, a seconda delle esigenze dell'utente. Ci sono dei tools che dato un file pdf estraggono un file XML che contiene oltre al testo la descrizione della formattazione del documento. 
+Il primo problema che si presenta nell'estrazione dei dati dal file Pdf è stato l'estrazione del testo. Pdf è un formato di stampa e talvolta tratta il testo alla stregua di immagini. In alcuni casi descrive le lettere di una stessa parola in maniera diversa dalle altre per ottenere un buon risultato di stampa, ma restitudendo un pessimo risultato per l'analisi del testo. Non è facile perciò ottenere un \textit{clear plain text} da un file Pdf. Tuttavia sono presenti un numero di tools e librerie che svolgono questa funzione in modo più o meno appropriato, a seconda delle esigenze dell'utente. Ci sono dei tools che dato un file PDF restituiscono un file XML che contiene oltre al testo la descrizione della formattazione del documento. 
 In particolare si è analizzato e testato tre strumenti diversi:
 \begin{itemize}
  \item \textit{pdftohtml} è un applicativo, distribuito come \textit{free software}, a linea di comando in dotazione con praticamente qualsiasi distribuzione GNU/Linux. E' utile per la conversione di un file pdf in html o xml e abbstanza veloce in quanto scritto in C++.
@@ -42,7 +42,7 @@ In particolare si è analizzato e testato tre strumenti diversi:
 \end{itemize}
 
 Sottolineando che si è ricercato tutti strumenti al limite con una licenza opensource\footnote{ricordarsi di citare i siti di questi progetti}, la scelta è infine caduta sulla suite PDFMiner perchè è scritta completamente in python e perciò meglio integrabile col nostro progetto, è funzionale per i nostri obiettivi ed è di semplice applicazione pratica.
-In particolare PDFMiner offre un interfaccia python direttamente integrabile con altro software python, in queso senso la scelta è anche ricaduta su questo tool:ha permesso un numero esiguo di modifiche al codice; in pratica solo la creazione di un file di binding tra il tool e l'applicativo pdftoref. La funzione di binding prende il nome \textit{``getTextFromPdf(PdfFile)''} e ritorna un documento XML benformato di questo tipo:
+In particolare PDFMiner offre un interfaccia python direttamente integrabile con altro software python, per questo ci ha permesso di raggiungere l'obiettivo con un numero esiguo di modifiche al codice: solo la creazione di un file di binding tra il tool e l'applicativo pdftoref. La funzione di binding prende il nome \textit{``getTextFromPdf(PdfFile)''} e ritorna un documento XML benformato di questo tipo:
 
 \begin{lstlisting}[language=XML,frame=r,caption=Esempio di XML relativo a documento PDF ,breaklines=true,basicstyle=\small]{Esempio di XML relativo a documento PDF}
 ...
