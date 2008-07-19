@@ -42,7 +42,7 @@ In particolare si è analizzato e testato tre strumenti diversi:
 \end{itemize}
 
 Sottolineando che si è ricercato tutti strumenti al limite con una licenza opensource\footnote{ricordarsi di citare i siti di questi progetti}, la scelta è infine caduta sulla suite PDFMiner perchè è scritta completamente in python e perciò meglio integrabile col nostro progetto, è funzionale per i nostri obiettivi ed è di semplice applicazione pratica.
-In particolare PDFMiner offre un interfaccia python direttamente integrabile con altro software python, per questo ci ha permesso di raggiungere l'obiettivo con un numero esiguo di modifiche al codice: solo la creazione di un file di binding tra il tool e l'applicativo pdftoref. La funzione di binding prende il nome \textit{``getTextFromPdf(PdfFile)''} e ritorna un documento XML benformato di questo tipo:
+In particolare PDFMiner offre un interfaccia python direttamente integrabile con altro software python, per questo ci ha permesso di raggiungere l'obiettivo con un numero esiguo di modifiche al codice: solo la creazione di un file di binding tra il tool e l'applicativo pdftoref. La funzione di binding prende il nome \texttt{getTextFromPdf(PdfFile)} e ritorna un documento XML benformato di questo tipo:
 
 \begin{lstlisting}[language=XML,frame=r,caption=Esempio di XML relativo a documento PDF ,breaklines=true,basicstyle=\small]{Esempio di XML relativo a documento PDF}
 ...
@@ -163,7 +163,7 @@ Poichè il titolo è di solito immediatamente successivo all'elenco degli autori
 \textit{``E' scelto come titolo la prima stringa estratta che presenta una sufficiente differenza di lunghezza dalla precendete''}\\
 
 Ovviamente questa idea di base non è immediatamente implementabile perchè non è dato sapere a priori il sufficiente scostamento tra un generico titolo e la lunghezza degli autori; inoltre questo scarto può variare da voce a voce quindi non è concepibile realizzare la suddetta regola come controlla sulla lunghezza delle stringhe,non avendo un valore di riferimento.\\
-L'approccio seguito quindi si basa su un confronto relativo, non assoluto, sulla prima stringa che risulta diversa dalla media della lunghezza delle stringhe. Si suppone che il titolo non contenga ne virgole ne punti, ma può contenere ad esempio punti e virgola ``;'' e due punti ``:''. Si divide ogni parte della voce bibliografica sia sulle virgole che sui punti, come accennato precedentmente, lasciando invariata la stringa del titolo. A questo punto si è ottenuto una lista di sottostringe, in cui ogni elemento è chiamato $x_i$. \'E calcolata la lunghezza in termini di caratteri di ogni sottostringa indicata da $|x_i|$; infine è fatta la media $\frac{\sum_i |xi|}{\sum_i 1}$. Successivamente la lista viene di nuovo scorsa cercando il primo valore che ha un rapporto: $ \frac{|x_i|}{ \sum_i |x_i|} \gg 1 $. Questo significa che questo è il primo elemento che produce un ampio scostamento nel numero di caratteri rispetto al valore medio; poichè spesso i titolo è una stringa lunga e che non è divisa nè da ``.'' nè ``,'' ed è preceduta da nomi di autori divisi dai delimitatori che contribuiranno a far rimanere la media molto bassa, allora è possibile dare una formulazione implementabile della suddetta euristica: il titolo è l'elemento $x_i$ nella lista creata tale che $ \frac{|x_i|}{ \sum_i |x_i|} \gg 1 $ come mostrato di seguito in questo esempio sulla voce seguente:\\
+L'approccio seguito quindi si basa su un confronto relativo, non assoluto, sulla prima stringa che risulta diversa dalla media della lunghezza delle stringhe. Si suppone che il titolo non contenga ne virgole ne punti, ma può contenere ad esempio punti e virgola ``;'' e due punti ``:''. Si divide ogni parte della voce bibliografica sia sulle virgole che sui punti, come accennato precedentmente, lasciando invariata la stringa del titolo. A questo punto si è ottenuto una lista di sottostringe, in cui ogni elemento è chiamato $x_i$. \'E calcolata la lunghezza in termini di caratteri di ogni sottostringa indicata da $|x_i|$; infine è fatta la media $\frac{\sum_i |xi|}{n}$, dove $n$ è il numero degli elementi nella lista. Successivamente la lista viene di nuovo scorsa cercando il primo valore che ha un rapporto: $ \frac{|x_i|}{\frac{\sum_i |xi|}{n} } \gg 1 $. Questo significa che questo è il primo elemento che produce un ampio scostamento nel numero di caratteri rispetto al valore medio; poichè spesso i titolo è una stringa lunga e che non è divisa nè da ``.'' nè ``,'' ed è preceduta da nomi di autori divisi dai delimitatori che contribuiranno a far rimanere la media molto bassa, allora è possibile dare una formulazione implementabile della suddetta euristica: il titolo è l'elemento $x_i$ nella lista creata tale che $ \frac{|x_i|}{ \frac{\sum_i |xi|}{n}} \gg 1 $ come mostrato di seguito in questo esempio sulla voce seguente:\\
 
 
 \textit{F.Kimura, K.Takashina, S.Tsuruoka, and Y.Miyake, \textsc{Modified quadratic discriminant functions and the application to Chinese character recognition}, IEEE Transactions on Pattern Analysis and Machine Intelligence , Vol.9, No.1, pp.149-153,1987. }\\
@@ -176,19 +176,19 @@ che porta al confronto $97/12 \gg 1$.
 
 \begin{table}\label{tab:title}
 \begin{center}
-\begin{tabular}{l|l|l|l}
-	\#  & Valore nella sottostringa $x_i$ & Lunghezza $|x_i|$ & Media $  \sum_i |x_i|$ \\
-	1 & \_F & 2 & 12 \\
-	2 & Kimura & 6 & 12 \\
-	3 & \_K & 2 & 12 \\
+\begin{tabular}{|l|l|l|l|} \hline
+	\#  & Valore nella sottostringa $x_i$ & Lunghezza $|x_i|$ & $  \frac{\sum_i |x_i|}{n}$  \\ \hline
+	1 & \_F & 2 & 12 \\  
+	2 & Kimura & 6 & 12 \\ 
+	3 & \_K & 2 & 12 \\ 
 	4 & Takashina & 9 & 12 \\
 	5 & \_S & 2 & 12 \\
 	6 & Tsuruoka & 8 & 12 \\
 	7 & \_and Y & 6 & 12 \\
-	8 & Miyake & 6 & 12 \\
-	9 & \begin{scriptsize}Modified quadratic discriminant functions and the  application to Chinese character recognition\end{scriptsize} & \textbf{97} & 12 \\
+	8 & Miyake & 6 & 12 \\ 
+	9 & \begin{scriptsize}Modified quadratic discriminant functions and the  application to Chinese character recognition\end{scriptsize} & \textbf{97} & 12 \\ \hline
 \end{tabular}
-\caption{Rappresentazione tabellare dei confronti che pdftoref esegue per estrarre il titolo a maggior distacco dalla media.\'E importante dire che i valori successivi della voce non sono riportati in quanto si prende sempre il primo valore che verifica l'euristica, interrompendo il subito il \textit{loop}.}
+\caption{Rappresentazione tabellare dei confronti che pdftoref esegue per estrarre il titolo a maggior distacco dalla media.\'E importante dire che i valori successivi della voce non sono riportati in quanto si prende sempre il primo valore che verifica l'euristica, interrompendo il subito il \textit{loop}. L'underscore rappresenta uno spazio aggiunto nella conversione del PDf}
 \label{label}
 \end{center}
 \end{table}
@@ -201,10 +201,65 @@ che porta al confronto $97/12 \gg 1$.
 
 
 
-In linea di massima questo criterio funziona fintanto che il titolo a sua volta non contiene altre virgole o punti, altrimenti è spezzato in sottostringhe di dimensione ridotta e le ipotesi che si sono fatte saltano. La funzione che realizza questo è \textit{``def titleExtractor(listOfEntries):''}
+In linea di massima questo criterio funziona fintanto che il titolo a sua volta non contiene altre virgole o punti, altrimenti è spezzato in sottostringhe di dimensione ridotta e le ipotesi che si sono fatte saltano. \\ La funzione che realizza questo è \texttt{titleExtractor(listOfEntries)}
 
 
 \subsection{Recupero Risorse Web}
 
-Come già citato nell'introduzione (sezione \ref{intro}) una volta separata ogni voce della bibliografia e ogni titolo con il metodo suddetto, si è implementato delle funzioni per cercare informazioni riguardo a quell'articolo citato identificato dal titolo. La soluzione scelta è stata quella di fare delle query al WebService di Google in maniera tale da realizzare una vera e propria ricerca sul famoso motore al fine di reperire l'indirizzo che indentifica l'articolo in rete a massimo ranking.
+Come già citato nell'introduzione (sezione \ref{intro}) una volta separata ogni voce della bibliografia e ogni titolo con il metodo suddetto, si è implementato delle funzioni per cercare informazioni a riguardo dell' articolo citato identificato dal titolo. La soluzione scelta è stata quella di fare delle query al WebService di Google in maniera tale da realizzare una vera e propria ricerca sul famoso motore al fine di reperire l'indirizzo a maggior ranking, che indentifica l'articolo in rete.\\
+Il motivo per cui si va a fare questo è essenzilamente per reperire maggiori informazioni, cercando di riscostriuire le parti perse durante la conversione del PDF in puro testo. In particolare si cerca di :
+\begin{enumerate}
+	\item Ricostruire il titolo esatto dell'articolo, evitando l'inconveniente degli spazi aggiunti nel titolo dalla conversione del PDF in puro testo.
+	\item Collegare la voce dell'articolo con il rispettivo testo BibTex
+	\item Scaricare dove possibile dell'intero articolo citato in formato PDF.
+\end{enumerate}
+
+Tutto il materiale reperito online infine è inserito nel file HTML di output affianco ad ogni voce delle bibliografia estratta.\\
+
+\subsubsection{Google WebService}
+
+
+Ci si sofferma ora sulla tecnica usata per fare query al motore di ricerca, passandogli come input il titolo dell'articolo. Data la presenza del WebService di Google per la ricerca di contenuti, programmabile con le nuove API (Application Program Interface) \cite{GWS}, si è riusciti a implementare un meccanismo di query più elegante rispetto ad un mera richiesta http, fattibile tramite le librerie \texttt{liburl} di Python. In particolare ci siamo tolti la problematica di parserare l'html generato da Google per le risposte via web, avvalendosi della consultazione del metodo remoto fornito dal WebService senza sporcarsi le mani.\'E bene sottolineare che non è stato possibile utilizzare Google Scholar perchè ancora non presenta una interfaccia in remoto a dei metodi di ricerca tramite WebService e poichè spesso i risultati del motore di ricerca sono più raffinati.\\
+Il codice che realizza questa procedura ovviamente svolge la comunicazione tramite il protocollo SOAP di tipo XML con il WebService, per questo motivo in prima instanza può sembrare che la complessità nel gestire XML sia la stessa che parsare HTML grezzo; in realtà la procedura della gestione del protocollo SOAP e della scrittura/lettrura degli envolope è molto più facile del complesso meccanismo che ci sta sotto, in quanto si è utilizzato un implementazione del client WebService di tipo Proxy usando le librerie Python SoapPy, tramite le quali si delega agli oggetti Proxy la gestione del protocollo e quindi dell'XML e ci forniscono una rappresentazione in locale del metodo esposto in remoto dal WebService. Tutto questa implementazione in Python è spiegata in \cite{ibm-py-ws}.\\
+Vediamo adesso in sintesi il codice, omesso dalle costanti iniziali che servono per inizializzare la query, la chiave delle licenza da usare per interrogare il webservice etc. Maggior dettagli in \cite{ibm-py-ws} :
+
+
+\begin{lstlisting}[language=Python,frame=r,caption=Codice relativo al dialogo con il GWS ,breaklines=true,basicstyle=\scriptsize]{Codice relativo al dialogo con il GWS}
+def googleSearch(title):
+    '''
+    It is the function of the application that make the request at google WS using SoapPY getting the first url of response.    
+    @param title: the title of the article to search for
+    @return: the first url
+    '''
+    _query=title
+
+    
+    '''create SOAP proxy object'''
+    google = SOAPProxy(_url, _namespace)
+    
+
+    
+    ''' call search method over SOAP proxy'''
+    results = google.doGoogleSearch( _license_key, _query, 
+                                     _start, _maxResults, 
+                                     _filter, _restrict,
+                                     _safeSearch, _lang_restrict, '', '' )
+
+    
+    '''Taking the max ranking result. if no result, return the # symbol'''                                                       
+    numresults = len(results.resultElements)
+    if numresults:
+        url = results.resultElements[0].URL
+    else:
+        url= "#"
+    return url
+    
+\end{lstlisting}
+
+
+\subsubsection{Recupero Bibtex e PDF}
+
+Una volta trovata la URL che identifica l'articolo a massimo ranking, ci è bastato analizzare le principali risorse di articoli sulla Rete che combaciassero con i risultati offerti dal motore di ricerca. In quest senso abbiamo sviluppato un funzione che sulla base del nome della URL, riesce a classificare il tipo di portale da analizzare per ricavare BibTex e a volte PDF. Quindi per ogni portale si è scritto un breve parse in grado di cercare il codice BibTex e reperire l'articolo.In alcuni casi i portali prevedono l'accesso di login e per scaricare PDF usufruiremo di portali liberi com Citeseer.
+
+
 
