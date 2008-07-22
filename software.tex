@@ -2,9 +2,9 @@
 
 L'applicativo è stato realizzato per mezzo di scripting python \cite{pydoc}, su sistema operativo GNU/Linux, in particolare sotto la versione Ubuntu Linux 8.04. Si è trattato con buoni risultati i casi più diffusi di bibliografia che utilizzano una struttura standard benformata per elencare le varie voci. Si è riusciti a trattare con risultati sufficienti anche i casi in cui la bibliografia non segue una regola predefinita.
 
-Estratta la bibliografia sono state implementate delle funzioni che effettuano richieste SOAP al WebService di Google \cite{GWS} per mezzo di proxy in python \cite{ibm-py-ws} utili a recuperare la Url della risorsa Web con maggiore ranking, correlata alla voce bibliografica. 
+Estratta la bibliografia sono state implementate delle funzioni che effettuano richieste SOAP al WebService di Google \cite{GWS} per mezzo di proxy in python \cite{ibm-py-ws} utili sia a correggere il titolo tramite Google Suggest sia a recuperare la Url della risorsa Web con maggiore ranking, correlata alla voce bibliografica. 
 
-Infine sono state sviluppate delle funzioni che costruiscono un file HTML contenente tutte le voci della bibliografia con il relativo link remoto e l'eventuale BibTex estratto dalla pagina HTML della risorsa remote come ad esempio CiteSeer, Portal ACME etc.
+Infine sono state sviluppate delle funzioni che costruiscono un file HTML contenente tutte le voci della bibliografia con il link remoto e l'eventuale BibTex estratto dalla pagina HTML della risorsa remote come ad esempio CiteSeer, Portal ACM etc. L'ultima caratteristica aggiunta all'applicativo è quella di poter scaricare alcuni pdf citati e organizzarli in una cartella. Il download dei pdf citati è però solo stati possibile in quei pochi portali liberi di accesso e non a pagamento.
 
 In figura sottostante sono riportati i passi princiapli dello script che vengono eseguiti:
 \begin{enumerate}
@@ -206,7 +206,7 @@ In linea di massima questo criterio funziona fintanto che il titolo a sua volta 
 
 \subsection{Recupero Risorse Web}
 
-Come già citato nell'introduzione (sezione \ref{intro}) una volta separata ogni voce della bibliografia e ogni titolo con il metodo suddetto, si è implementato delle funzioni per cercare informazioni a riguardo dell' articolo citato identificato dal titolo. La soluzione scelta è stata quella di fare delle query al WebService di Google in maniera tale da realizzare una vera e propria ricerca sul famoso motore al fine di reperire l'indirizzo a maggior ranking, che indentifica l'articolo in rete.\\
+Come già citato nell'introduzione (sezione \ref{intro}) una volta separata ogni voce della bibliografia e ogni titolo con il metodo suddetto, si è implementato delle funzioni per cercare informazioni a riguardo dell'articolo citato identificato dal titolo. La soluzione scelta è stata quella di fare delle query al WebService di Google in maniera tale da realizzare una vera e propria ricerca al fine di reperire l'indirizzo che identifica l'articolo in rete. Ci cerca quindi nei primi tre risultati almeno un collegamento ad uno dei portali di maggiore rilevanza (~\htmladdnormallink{CiteSeer}{http://citeseer.ist.psu.edu/},~\htmladdnormallink{Portal.Acm}{http://portal.acm.org},~\htmladdnormallink{IEEExplore}{http://ieeexplore.ieee.org} ), per ottenere sia il Bibtex sia il PDF.\\
 Il motivo per cui si va a fare questo è essenzilamente per reperire maggiori informazioni, cercando di riscostriuire le parti perse durante la conversione del PDF in puro testo. In particolare si cerca di :
 \begin{enumerate}
 	\item Ricostruire il titolo esatto dell'articolo, evitando l'inconveniente degli spazi aggiunti nel titolo dalla conversione del PDF in puro testo.
