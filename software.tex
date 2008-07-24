@@ -6,7 +6,7 @@ Estratta la bibliografia sono state implementate delle funzioni che effettuano r
 
 Infine sono state sviluppate delle funzioni che costruiscono un file HTML contenente tutte le voci della bibliografia con il link remoto e l'eventuale BibTex estratto dalla pagina HTML della risorsa remote come ad esempio CiteSeer, Portal ACM etc. L'ultima caratteristica aggiunta all'applicativo è quella di poter scaricare alcuni pdf citati e organizzarli in una cartella. Il download dei pdf citati è però solo stati possibile in quei pochi portali liberi di accesso e non a pagamento.
 
-In figura sottostante sono riportati i passi princiapli dello script che vengono eseguiti:
+In figura sottostante sono riportati i passi principali dello script che vengono eseguiti:
 \begin{enumerate}
 	\item Estrazione del testo
 	\item Implementazione dell'euristiche basate su espressioni regolari per localizzare la bibliografia ed estrarre le voci
@@ -282,9 +282,7 @@ def googleSearch(title):
 \end{lstlisting}
 
 
-\subsubsection{Recupero Bibtex e PDF}
-
-Una volta trovata la URL che identifica l'articolo a massimo ranking, ci è bastato analizzare le principali risorse di articoli sulla Rete che combaciassero con i risultati offerti dal motore di ricerca. In quest senso abbiamo sviluppato un funzione che sulla base del nome della URL, riesce a classificare il tipo di portale da analizzare per ricavare BibTex e a volte PDF. Quindi per ogni portale si è scritto un breve parser in grado di cercare il codice BibTex e reperire l'articolo.In alcuni casi i portali prevedono l'accesso di login e per scaricare PDF usufruiremo di portali liberi com Citeseer.
-
-
-
+\subsubsection{Problematiche Recupero Bibtex e PDF}
+Le modalità di recupero Bitex e PDF sono strettamente legate alla sorgente dell'informazione. \'E impossibile astrarre un caso generale. Per questo motivo è stato utile classificare le sorgenti migliori e più frequenti, per implementare dei metodi ad hoc. Nel caso in cui il il WebService di google risponda direttamente col collegamento al PDF dell'articolo, non è possibile prelevare info aggiutive, sebbene sia possibile scaricare l'intero file.
+Quando invece si ottiene il collegamento ad una pagina di descrizione dell'articolo che contiene il riferimento al file, è possibile ottere informazioni più dettagliate. Per estrarre queste informazioni è necessario però eseguire il parsing della singola pagina tenendo conto del template della sorgente,come ad esempio: Citeseer, Ieee, portal.acm, springerlink. 
+Per ottenere la quasi totalità delle informazioni che ci siamo prefissati sarebbe sufficiente trattare queste quattro sorgenti, ma purtroppo nella pratica non è possibile raggiungere questo risultato eccellente. Se per l'ottenimento del bibtex i risultati sono comunque buoni, questo non vale per il dowload del documento completo: gran parte degli archivi di articoli sul web, o offrono i documenti dietro compenso pecuniario, o impongono delle restizioni sul numero di richieste effettuabili da uno stesso IP in un certo intervallo di tempo, oppure non posseggono proprio il documento.
