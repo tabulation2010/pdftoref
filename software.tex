@@ -163,7 +163,7 @@ Poichè il titolo è di solito immediatamente successivo all'elenco degli autori
 \textit{``E' scelto come titolo la prima stringa estratta che presenta una sufficiente differenza di lunghezza dalla precendete''}\\
 
 Ovviamente questa idea di base non è direttamente implementabile, perchè non è dato sapere a priori il sufficiente scostamento tra il titolo e la lunghezza della stringa di un autore, ovviamente questo scarto può variare da voce a voce e perciò non è concepibile realizzare la suddetta regola senza avere definito un valore di riferimento.\\
-Dunque il criterio si poggia sulla scelta della prima stringa che risulta diversa dalla media delle lunghezze dei sottoelementi di ogni singola voce. E' evidente che questo è un confonto relatico e non assoluto. Si suppone inoltre che il titolo non contenga ne virgole ne punti, ma che possa contenere ad esempio punti e virgola ``;'' e due punti ``:''.
+Dunque il criterio si poggia sulla scelta della prima stringa che risulta diversa dalla media delle lunghezze dei sottoelementi di ogni singola voce. E' evidente che questo è un confonto relativo e non assoluto. Si suppone inoltre che il titolo non contenga ne virgole ne punti, ma che possa contenere ad esempio punti e virgola ``;'' e due punti ``:''.
 \\
 \subsubsection{Criterio di scelta del titolo}
 \begin{enumerate}
@@ -173,11 +173,12 @@ Dunque il criterio si poggia sulla scelta della prima stringa che risulta divers
  \item Si scorre la lista cercando il primo valore che ha un rapporto: $ \frac{|x_i|}{\frac{\sum_i |xi|}{n} } \gg 1 $.
 \end{enumerate}
 
-Abbiamo così trovato il primo elemento che produce un ampio scostamento, in numero di caratteri, rispetto al valore medio. E' necessario sottolineare che i nomi degli autori in genere tendono ad abbassare il valore della media.
-\\~\\
-Un esempio pratico è dato di seguito:
+Abbiamo così trovato il primo elemento che produce un ampio scostamento, in numero di caratteri, rispetto al valore medio. E' necessario sottolineare che i nomi degli autori in genere tendono ad abbassare il valore della media, garantendo uno scarto sufficientemente alto tra il numero di caratteri del titolo e la media. 
+\newpage
+
+Un esempio pratico è dato di seguito:\\
 \\~
-\textit{F.Kimura, K.Takashina, S.Tsuruoka, and Y.Miyake, \textsc{Modified quadratic discriminant functions and the application to Chinese character recognition}, IEEE Transactions on Pattern Analysis and Machine Intelligence , Vol.9, No.1, pp.149-153,1987. }
+\textit{``F.Kimura, K.Takashina, S.Tsuruoka, and Y.Miyake, \textsc{Modified quadratic discriminant functions and the application to Chinese character recognition}, IEEE Transactions on Pattern Analysis and Machine Intelligence , Vol.9, No.1, pp.149-153,1987.'' }
 \\
 \begin{table}\label{tab:title}
 \begin{center}
@@ -200,19 +201,19 @@ Un esempio pratico è dato di seguito:
 \end{center}
 \end{table}
 
-Dalla tabella \ref{tab:title} si evince che ovviamente il titolo risulta quel $x_i$ tale che $ \frac{|x_i|}{ \sum_i |x_i|} \gg 1 $ cioè:
+Dalla tabella \ref{tab:title} si evince che ovviamente il titolo risulta quel $x_i$ tale che $ \frac{|x_i|}{ \frac{\sum_i |x_i|}{n}} \gg 1 $ cioè:
 \\ $ x_9= $ \textit{Modified quadratic discriminant functions and the application to Chinese character recognition} - che porta al confronto $97/12 \gg 1$. -
 \\~\\
 %Un problema è stimare la giusta soglia per giudicare la differenza sufficiente. Un'indagine statistica ci ha aiutato nel trovare una stima appropriata.
-In linea di massima questo criterio funziona fintanto che il titolo a sua volta non contiene altre virgole o punti, altrimenti è spezzato in sottostringhe di dimensione ridotta e le ipotesi che si sono fatte saltano. \\ La funzione che realizza questo è \texttt{titleExtractor(listOfEntries)}
+In linea di massima questo criterio funziona fintantochè il titolo a sua volta non contiene altre virgole o punti, altrimenti è spezzato in sottostringhe di dimensione ridotta e fintantochè la differenza della lunghezza del titolo con quella degli autori è consistente. Altrimenti le ipotesi che si sono fatte saltano. \\ La funzione che realizza questo è \texttt{titleExtractor(listOfEntries)}.
 
 
 \subsection{Recupero Risorse Web}
 
-Come già citato nell'introduzione (sezione \ref{intro}) si è infine implementato delle funzioni per cercare informazioni sul web riguardanti l'articolo citato, che consideriamo identificato dal solo titolo.
-\\
-La soluzione scelta è stata quella di eseguire delle query al WebService di Google per realizzare una ricerca che permetta di reperire l'indirizzo che identifica l'articolo in rete.
-\\ 
+Come già citato nell'introduzione (sezione \ref{intro}) si è infine implementato delle funzioni per correggere il titolo e per cercare la risorse sul web correlata all'articolo citato.\\
+La soluzione scelta è stata quella di eseguire delle query al WebService di Google per sfruttare il servizio di Google Suggest per il perfezionamento del titolo, tramite il metodo remoto \texttt{doSpellingSuggestion} e successivamente realizzare una ricerca che permetta di reperire l'indirizzo dell'articolo in rete tramite il metodo remoto \texttt{doGoogleSearch}.\\ 
+I metodi remoti offerti dal WebService di Google possono essere consultati attraverso l'analisi del file WSDL eposto alla URL \texttt{} \htmladdnormallink{http://api.google.com/GoogleSearch.wsdl}{http://api.google.com/GoogleSearch.wsdl}. Per maggiori informazioni su questo formato che prende il nome da \textit{Web Services Description Language} si può consultare \cite{wsdl1} e \cite{wsdl2}.\\
+
 A questo fine si cerca nei primi tre risultati almeno un collegamento ad uno dei portali che abbiamo individuato essere di maggiore rilevanza:
 
 \begin{itemize} 
@@ -240,7 +241,7 @@ Di seguito ci si sofferma in dettaglio sulla tecnica usata per fare query al mot
 \\ 
 Data la possibilità di usufruire del WebService di Google per la ricerca di contenuti, grazie alle nuove API (Application Program Interface) \cite{GWS}, si è riusciti a implementare un meccanismo di query più elegante rispetto ad un mera richiesta http, eseguibile tramite le librerie \texttt{liburl} di Python. In particolare è stato possibile aggirare la problematica di parserare l'html generato da Google per le risposte web, avvalendosi della consultazione del metodo remoto fornito dal WebService.
 \\
-\'E bene sottolineare che non è stato possibile utilizzare Google Scholar perchè ancora non offre un'interfaccia  tramite WebService.
+\'E bene sottolineare che non è stato possibile utilizzare \textit{Google Scholar} perchè ancora non offre un'interfaccia  tramite WebService.
 \\
 Il codice che realizza questa procedura ovviamente svolge la comunicazione tramite richieste SOAP-XML, per questo motivo in prima instanza può sembrare che la complessità nel gestire XML sia la stessa che parsare HTML grezzo. In realtà la procedura per gestione del protocollo SOAP e la scrittura/lettura degli envolope è molto più agile del complesso meccanismo sottostante, in quanto stata utilizzata un'implementazione del client WebService di tipo Proxy usando le librerie Python SoapPy. Per mezzo di esse si delega ad oggetti Proxy la gestione del protocollo e quindi dell'XML, ottenendo una rappresentazione in locale del metodo dal WebService. Tutto questo è esaurientemente descritto in \cite{ibm-py-ws}.
 \\
@@ -253,12 +254,14 @@ def googleSearch(title):
     @param title: the title of the article to search for
     @return: the first url
     '''
-    _query=title
-
-    
+   
     '''create SOAP proxy object'''
     google = SOAPProxy(_url, _namespace)
     
+    _query= google.doSpellingSuggestion( _license_key, title )
+    
+    if _query == None:
+        _query=title
 
     
     ''' call search method over SOAP proxy'''
@@ -281,7 +284,7 @@ def googleSearch(title):
 
 \subsubsection{Recupero Bibtex e PDF}
 
-Una volta trovata la URL che identifica l'articolo a massimo ranking, ci è bastato analizzare le principali risorse di articoli sulla Rete che combaciassero con i risultati offerti dal motore di ricerca. In quest senso abbiamo sviluppato un funzione che sulla base del nome della URL, riesce a classificare il tipo di portale da analizzare per ricavare BibTex e a volte PDF. Quindi per ogni portale si è scritto un breve parse in grado di cercare il codice BibTex e reperire l'articolo.In alcuni casi i portali prevedono l'accesso di login e per scaricare PDF usufruiremo di portali liberi com Citeseer.
+Una volta trovata la URL che identifica l'articolo a massimo ranking, ci è bastato analizzare le principali risorse di articoli sulla Rete che combaciassero con i risultati offerti dal motore di ricerca. In quest senso abbiamo sviluppato un funzione che sulla base del nome della URL, riesce a classificare il tipo di portale da analizzare per ricavare BibTex e a volte PDF. Quindi per ogni portale si è scritto un breve parser in grado di cercare il codice BibTex e reperire l'articolo.In alcuni casi i portali prevedono l'accesso di login e per scaricare PDF usufruiremo di portali liberi com Citeseer.
 
 
 
