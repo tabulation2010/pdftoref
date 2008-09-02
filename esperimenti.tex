@@ -1,2 +1,111 @@
 \section{Esperimenti} \label{esperimenti}
+Terminato lo sviluppo del nostro applicativo, abbiamo provato questo su alcuni pdf in nostro possesso, concessi gentilmente dal prof Marinai.  I files erano divisi in tre cartelle: ``Icdar07'', ``Grec-03'' e ``Articoli scientifici''. Gli articoli in ciascuna cartella avevano l'elenco dei riferimenti rispettivamente: con numero tra parentesi quadre (``Icdar07''), con numero seguito da punto (``Grec-03'') e senza nulla (``Articoli scientifici''). 
+\\~\\
+Per eseguire le prove ci siamo recati all'interno di un laboratorio della facoltà di Ingegneria dell'Università di Firenze, poichè con un indirizzo Ip interno abbiamo avuto la possibilità di scaricare un numero maggiore di Pdf destinati alla ricerca, altrimenti non accessibili.
+Le prove sono state eseguite su tutti i documenti, poi ne è stato scelto un sottoinsieme per la valutazione dei risultati ottenuti. In particolare sono stati scelti casualmente 20 documenti dalla cartella ``Icdar07'', 20 da ``Grec-03'' e solo 2 da ``Articoli scientifici'', poichè sfortunatamente un gran numero di pdf in questa cartella non era in formato testo.
+\\~\\
+Per ciascun documento sono stati valutati i seguenti parametri:
+\begin{itemize}
+ \item \textbf{NO} - è il numero di riferimenti contenuti nel documento originale.
+ \item \textbf{NC} - è il numero di riferimenti correttamente individuati. 
+ \item \textbf{NT} - è il numero di titoli correttamente indivuato.
+ \item \textbf{NL} - è il numero di risorse corretemente associate ai riferimenti.
+ \item \textbf{NB} - è il numero di bibTex correttamente associati ai riferimenti.
+ \item \textbf{NP} - è il numero di pdf associati ai riferimenti che si è riusciti a scaricare. 
+\end{itemize}
+
+e quindi i seguenti Indici Statistici:
+\begin{itemize}
+ \item \textbf{$\frac{NC}{NO}$} - indica il numero di riferimenti trovati correttamente su quelli presenti nel documento originale
+ \item \textbf{$\frac{NT}{NC}$} - indica il numero di titoli estratti correttamente sul numero di riferimenti correttamente trovati
+ \item \textbf{$\frac{NL}{NT}$} - indica il numero di risorse associate correttamente sul numero di titoli correttamente estratti
+ \item \textbf{$\frac{NB}{NT}$} - indica il numero di bibTex associati correttamente sul numero di titoli correttamente estratti
+ \item \textbf{$\frac{NP}{NT}$} - indica il numero di pdf scaricati correttamente sul numero di titoli correttamente estratti
+\end{itemize}
+
+	\begin{table}\label{tab:icdar}
+	\begin{center}
+	\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|} \hline
+Nome File & NO & NC & NT & NL & NB & NP & ~ & NC/NO & NT/NC & NL/NT & NB/NT & NP/NT \\ \hline
+04378668 & 17 & 17 & 15 & 12 & 5 & 11 & ~ & 100,0\% & 88,2\% & 80,0\% & 33,3\% & 73,3\% \\
+04378669 & 7 & 7 & 6 & 3 & 2 & 3 & ~ & 100,0\% & 85,7\% & 50,0\% & 33,3\% & 50,0\%\\
+04378670 & 13 & 13 & 13 & 10 & 5 & 10 & ~ & 100,0\% & 100,0\% & 76,9\% & 38,5\% & 76,9\%\\
+04378671 & 11 & 9 & 9 & 6 & 1 & 5 & ~ & 81,8\% & 100,0\% & 66,7\% & 11,1\% & 55,6\%\\
+04378672 & 7 & 7 & 6 & 6 & 2 & 4 & ~ & 100,0\% & 85,7\% & 100,0\% & 33,3\% & 66,7\%\\
+04378673 & 11 & 11 & 11 & 11 & 4 & 8 & ~ & 100,0\% & 100,0\% & 100,0\% & 36,4\% & 72,7\%\\
+04378674 & 12 & 12 & 11 & 6 & 2 & 6 & ~ & 100,0\% & 91,7\% & 54,5\% & 18,2\% & 54,5\%\\
+04378679 & 7 & 2 & 1 & 1 & 0 & 1 & ~ & 28,6\% & 50,0\% & 100,0\% & 0,0\% & 100,0\%\\
+04378681 & 16 & 7 & 7 & 5 & 0 & 0 & ~ & 43,8\% & 100,0\% & 71,4\% & 0,0\% & 0,0\%\\
+04378686 & 10 & 9 & 9 & 7 & 2 & 5 & ~ & 90,0\% & 100,0\% & 77,8\% & 22,2\% & 55,6\%\\
+04378690 & 18 & 18 & 17 & 15 & 11 & 12 & ~ & 100,0\% & 94,4\% & 88,2\% & 64,7\% & 70,6\%\\
+04378692 & 8 & 8 & 8 & 7 & 1 & 7 & ~ & 100,0\% & 100,0\% & 87,5\% & 12,5\% & 87,5\%\\
+04378694 & 7 & 7 & 6 & 3 & 1 & 3 & ~ & 100,0\% & 85,7\% & 50,0\% & 16,7\% & 50,0\%\\
+04378696 & 8 & 8 & 6 & 5 & 1 & 5 & ~ & 100,0\% & 75,0\% & 83,3\% & 16,7\% & 83,3\%\\
+04378698 & 22 & 21 & 21 & 18 & 7 & 12 & ~ & 95,5\% & 100,0\% & 85,7\% & 33,3\% & 57,1\%\\
+04378700 & 10 & 10 & 7 & 5 & 2 & 5 & ~ & 100,0\% & 70,0\% & 71,4\% & 28,6\% & 71,4\%\\
+04378702 & 20 & 20 & 18 & 7 & 3 & 4 & ~ & 100,0\% & 90,0\% & 38,9\% & 16,7\% & 22,2\%\\
+04378706 & 10 & 10 & 10 & 6 & 2 & 5 & ~ & 100,0\% & 100,0\% & 60,0\% & 20,0\% & 50,0\%\\
+bertolani--18 & 14 & 14 & 13 & 6 & 2 & 5 & ~ & 100,0\% & 92,9\% & 46,2\% & 15,4\% & 38,5\%\\
+luthy-08 & 14 & 14 & 14 & 10 & 5 & 9 & ~ & 100,0\% & 100,0\% & 71,4\% & 35,7\% & 64,3\%\\ \hline
+Totale & 242 & 224 & 208 & 149 & 58 & 120 & ~ & 92,0\% & 90,5\% & 73,0\% & 24,3\% & 60,0\%\\ \hline
+	\end{tabular}
+	\tiny{\caption{Risultati ottenuti nell'esecuzione di pdftoref su parte dei pdf presi dalla conferenza ICDAR07 - The 9th International Conference on Document Analysis and Recognition (ICDAR) }}
+	\end{center}
+	\end{table}
+
+	\begin{table}\label{tab:icdar}
+	\begin{center}
+	\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|} \hline
+Nome File & NO & NC & NT & NL & NB & NP & ~ & NC/NO & NT/NC & NL/NT & NB/NT & NP/NT \\ \hline
+1 & 18 & 17 & 14 & 13 & 5 & 11 & ~ & 94,4\% & 82,4\% & 92,9\% & 35,7\% & 78,6\%\\
+100 & 2 & 2 & 1 & 0 & 0 & 0 & ~ & 100,0\% & 50,0\% & 0,0\% & 0,0\% & 0,0\%\\
+109 & 5 & 4 & 2 & 4 & 0 & 2 & ~ & 80,0\% & 50,0\% & 200,0\% & 0,0\% & 100,0\%\\
+116 & 16 & 16 & 13 & 12 & 8 & 7 & ~ & 100,0\% & 81,3\% & 92,3\% & 61,5\% & 53,8\%\\
+128 & 15 & 9 & 7 & 5 & 5 & 4 & ~ & 60,0\% & 77,8\% & 71,4\% & 71,4\% & 57,1\%\\
+13 & 19 & 18 & 15 & 15 & 0 & 16 & ~ & 94,7\% & 83,3\% & 100,0\% & 0,0\% & 106,7\%\\
+142 & 30 & 29 & 28 & 19 & 15 & 13 & ~ & 96,7\% & 96,6\% & 67,9\% & 53,6\% & 46,4\%\\
+154 & 10 & 10 & 10 & 5 & 1 & 3 & ~ & 100,0\% & 100,0\% & 50,0\% & 10,0\% & 30,0\%\\
+176 & 11 & 11 & 9 & 6 & 4 & 4 & ~ & 100,0\% & 81,8\% & 66,7\% & 44,4\% & 44,4\%\\
+188 & 5 & 5 & 5 & 2 & 0 & 2 & ~ & 100,0\% & 100,0\% & 40,0\% & 0,0\% & 40,0\%\\
+193 & 7 & 7 & 7 & 3 & 3 & 1 & ~ & 100,0\% & 100,0\% & 42,9\% & 42,9\% & 14,3\%\\
+199 & 26 & 26 & 22 & 16 & 10 & 10 & ~ & 100,0\% & 84,6\% & 72,7\% & 45,5\% & 45,5\%\\
+211 & 13 & 13 & 12 & 5 & 4 & 3 & ~ & 100,0\% & 92,3\% & 41,7\% & 33,3\% & 25,0\%\\
+244 & 9 & 8 & 7 & 2 & 0 & 2 & ~ & 88,9\% & 87,5\% & 28,6\% & 0,0\% & 28,6\%\\
+25 & 10 & 10 & 8 & 6 & 3 & 6 & ~ & 100,0\% & 80,0\% & 75,0\% & 37,5\% & 75,0\%\\
+317 & 10 & 9 & 9 & 4 & 1 & 1 & ~ & 90,0\% & 100,0\% & 44,4\% & 11,1\% & 11,1\%\\
+341 & 15 & 15 & 12 & 8 & 4 & 7 & ~ & 100,0\% & 80,0\% & 66,7\% & 33,3\% & 58,3\%\\
+38 & 11 & 11 & 7 & 5 & 3 & 5 & ~ & 100,0\% & 63,6\% & 71,4\% & 42,9\% & 71,4\%\\
+50 & 26 & 26 & 25 & 16 & 5 & 9 & ~ & 100,0\% & 96,2\% & 64,0\% & 20,0\% & 36,0\%\\
+75 & 15 & 15 & 15 & 7 & 2 & 6 & ~ & 100,0\% & 100,0\% & 46,7\% & 13,3\% & 40,0\%\\ \hline
+Totale & 273 & 261 & 228 & 153 & 73 & 112 & ~ & 95,2\% & 84,4\% & 66,8\% & 27,8\% & 48,1\%\\ \hline
+	\end{tabular}
+	\tiny{\caption{Risultati ottenuti nell'esecuzione di pdftoref su parte dei pdf presi dalla conferenza GREC03 }}
+	\end{center}
+	\end{table}
+	
+
+	\begin{table}\label{tab:icdar}
+	\begin{center}
+	\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|} \hline
+Nome File & NO & NC & NT & NL & NB & NP & ~ & NC/NO & NT/NC & NL/NT & NB/NT & NP/NT \\ \hline
+thrun98 & 35 & 34 & 25 & 21 & 14 & 18 & ~ & 97,1\% & 73,5\% & 84,0\% & 56,0\% & 72,0\%\\
+1.pdf & 16 & 16 & 16 & 13 & 6 & 5 & ~ & 100,0\% & 100,0\% & 81,3\% & 37,5\% & 31,3\%\\ \hline
+Totale & 51 & 50 & 41 & 34 & 20 & 23 & ~ & 98,6\% & 86,8\% & 82,6\% & 46,8\% & 51,6\%\\ \hline	\end{tabular}
+	\tiny{\caption{Risultati ottenuti nell'esecuzione di pdftoref su parte dei pdf presi da articoli senza nessun template per l'elencare le voci bibliografiche}}
+	\end{center}
+	\end{table}
+	
+		\begin{table}\label{tab:icdar}
+	\begin{center}
+	\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|} \hline
+	Cartella & NO & NC & NT & NL & NB & NP & ~ & NC/NO & NT/NC & NL/NT & NB/NT & NP/NT \\ \hline
+	Icdar & 242 & 224 & 208 & 149 & 58 & 120 & ~ & 92,0\% & 90,5\% & 73,0\% & 24,3\% & 60,0\%\\ 
+	Grec & 273 & 261 & 228 & 153 & 73 & 112 & ~ & 95,2\% & 84,4\% & 66,8\% & 27,8\% & 48,1\%\\
+	Varie & 51 & 50 & 41 & 34 & 20 & 23 & ~ & 98,6\% & 86,8\% & 82,6\% & 46,8\% & 51,6\%\\ \hline
+	Totale & 566 &	535	 & 477 &	336 &	151 & 	255 & ~ & 94,5\% & 89,2\% &	70,4\% & 31,7\% & 75,9\% \\ \hline
+	\end{tabular}
+	\tiny{\caption{Risultati totali finali}}
+	\end{center}
+	\end{table}
+	
 
