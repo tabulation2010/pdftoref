@@ -60,6 +60,8 @@ Quindi in sintesi i casi pessimi hanno portato alla luce che per quando riguarda
 Ci si potrebbe chiedere come mai questo caso ottimo mantenga comunque una percentuale piuttosto bassa ($36,41\%$) sulle testo BibTex trovato: il motivo è da attribuirsi alla scarsità di risorse web che contengono il BibTex degli articoli; si è cercato di prelevare il BibTex dalle principali \textit{Scientific Digital Library} scrivendo tre parser per Citeseer,Portal.Acme e IEEExplore. Questo ci ha permesso circa un terzo delle volte di recuperare il BibTex, ma ovviamente quando la risorsa web è un link diretto ad PDF oppure un portale come Springerlink che non contiene BibTex è stato impossibile effettuare la ricerca. Discorso simile va fatto per il recupero dei PDF, già accennato precedentemente: in questo caso si ottiene un indice del $72,7\%$, ma è da sottolineare che eventuali Pdf scaricati non corrispondenti non sono stati contati per il calcolo dell'indice.
 \end{description}
 
+Un ultima cosa da osservare è che nell'articolo \textit{thrun.pdf}, uno di quelli senza un template ben preciso per la bibliografia, sono presenti 35 entries bibliografiche, ma il nostro applicativo ne riporta ben 39. Questo è dovuto al fatto che 4 entries vengono aggiunte in modo errato poichè una entry viene estratta in due provocando l'aumento del numero. Questo quindi è un caso che sottolinea come l'errore non può manifestarsi solo in un ``taglio'' da parte di alcuni pezzi di bibliografia, ma anche nell'aggiunta di alcune parti che invece dovrebbero essere tutte di fila alle altre.
+
 
 	\begin{table}
 
