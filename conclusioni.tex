@@ -1,5 +1,29 @@
 \section{Conclusioni} \label{conclusioni}
-E' dunque arrivato il momento di trarre le dovute conclusioni. Il software che ci si era prefissi di realizzare per svolgere le funzioni di Information Retrival è stato realizzato, è funzionante e praticamente utilizzabile. Un sufficiente numero di test è stato eseguito per valutare sia le prestazioni del nostro applicativo, che la bontà delle nostre idee risolutive. I risultati ottenuti dai test sono stati molto soddisfacienti, talvolta al di sopra delle nostre  più ottimistiche previsioni. Appare evidente che un sifatto strumento basato su regole, nonostante la sua semplicità, permetta di ottenere dei buoni risultati, soprattutto considerando la varietà di problematiche che si presentano a chiunque si appresti all'estrazione di metadati da documenti testuali più o meno generici. Anche per quanto riguarda la parte meno strettamente legata all'estrazione delle informazioni dal documento si è ottenuto dei buoni risultati. L'insieme dei dati estratti, raccolti e collegati dall'applicativo per ciascun articolo citato è da ritenersi qualcosa di utile indipendentemente dal mero approfondimento legato a curiosità informatiche. Si ritiene di aver realizzato uno strumento che con le dovute migliorie può rivelarsi un utile per chi fa ricerca e non solo. Pensiamo di poterci ritenere molto soddisfatti sia dall'esperienza fatta, che dalle conoscenze acquisite, che dai risultati ottenuti. 
+E' dunque arrivato il momento di trarre le dovute conclusioni. Il software che ci si era prefissi di realizzare per svolgere le funzioni di Information Retrieval è stato implementato, è funzionante e praticamente utilizzabile. \'E stato persino utilizzato dai sottoscritti per analizzare la bibliografia di un articolo da studiare per il corso di Visione Computazionale del Prof.Colombo. Un sufficiente numero di test è stato eseguito per valutare sia le prestazioni del nostro applicativo, che la bontà delle nostre idee risolutive. I risultati ottenuti dai test sono stati molto soddisfacienti, talvolta al di sopra delle nostre  più ottimistiche previsioni.In particolare si era detto di ottenere discreti risultati sulle bibliografie ben formate e invece in media abbiamo ottenuti ottimi risultati. Stessa nota positiva per le bibliografie non \textit{well formed}, dove abbiamo ottenuti risultati molto buoni. Perciò appare evidente che un sifatto strumento basato su regole, nonostante la sua semplicità, permetta di ottenere dei buoni risultati, soprattutto considerando la varietà di problematiche che si presentano a chiunque si appresti all'estrazione di metadati da documenti testuali più o meno generici. Anche per quanto riguarda la parte meno strettamente legata all'estrazione delle informazioni dal documento, ossia per il collezionamento dei BibTex e PDF, si è ottenuto dei buoni risultati;senza togliere il fatto che sarà sempre possibile in un futuro dare all'applicativo un veste di crawler che cicla sui risultati ottenuti in maniera ricorsiva; questo sarà accennato nella sezione sviluppi futuri. Oltre a questo c'è da sottolineare un pregio non prettamente relativo all'Information Retriveal, è cioè il fatto che l'applicativo presenta buone prestazione e risulta portabile su tutti i sistemi operativi, dato l'utilizzo dell'interprete Python e di librerie \textit{pure Python}, senza la presenza di moduli C/C++.
+
+L'insieme dei dati estratti, raccolti e collegati dall'applicativo per ciascun articolo citato è da ritenersi qualcosa di utile indipendentemente dal mero approfondimento legato a curiosità informatiche. Si ritiene infatti di aver realizzato uno strumento che con le dovute migliorie può rivelarsi un utile per chi fa ricerca e non solo. Pensiamo di poterci ritenere molto soddisfatti sia dall'esperienza fatta, che dalle conoscenze acquisite, che dai risultati ottenuti. Questa tesi è ancora più avvalorata dal fatto che l'applicativo è stato rilasciato sotto licenza libera GPL e sviluppato in modo open-source come conferma il repository aperto su Google Code per lo sviluppo all'indirizzo  \htmladdnormallink{http://code.google.com/p/pdftoref/}{http://code.google.com/p/pdftoref/}. \'E possibile trovare i sorgenti dell'applicativo, la relativa documentazione, il repository SVN dei sorgenti aggiornati ed è stato anche depositato un pacchetto \textit{.deb} per sistemi operativi GNU/Linux con gestore di pacchetti APT, come Debian e Ubuntu.
+
+Qui sotto possiamo vedere il listato di comandi che supporta l'applicativo pdftoref.
+\begin{verbatim}
+
+lizardking@lizard:~/src/workspace/pdftoref/src$ ./pdftoref.py
+     Usage: 
+
+     -h            --help              This help Command 
+     -f filepath   --file=filepath     Run on a file 
+     -d directory  --dir=directory     Run into a directory 
+     -u            --url               Get the title url 
+     -b            --bibtex            Get the bibtex article 
+     -p            --pdf               Download the article cited
+ 
+     Examples:
+
+     pdftoref -b -u -f ~/file.pdf
+     pdftoref --url --bibtex --file=~/file.pdf
+     pdftoref -d /home/user/articles 
+
+
+\end{verbatim}
 
 \subsection{Sviluppi Futuri}\label{sviluppifuturi}
 Come più volte ripetuto in questa relazione molti sono i miglioramenti apportabili a questo applicativo, su vari fronti. In linea di massima sono sintetizzabili nel seguente elenco:
