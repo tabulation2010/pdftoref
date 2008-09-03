@@ -1,14 +1,14 @@
 \section{Esperimenti} \label{esperimenti}
-Terminato lo sviluppo del nostro applicativo, abbiamo provato questo su alcuni pdf in nostro possesso,usati anche in altri elaborati come \textit{test suite} e concessi gentilmente dal prof Marinai.  I files erano divisi in tre cartelle: ``Icdar07'', ``Grec-03'' e ``Articoli scientifici''. Gli articoli in ciascuna cartella avevano l'elenco dei riferimenti rispettivamente: con numero tra parentesi quadre (``Icdar07''), con numero seguito da punto (``Grec-03'') e senza nessun tipo di elenco (``Articoli scientifici''). 
+Terminato lo sviluppo del nostro applicativo, abbiamo provato questo su alcuni pdf in nostro possesso, usati anche in altri elaborati come \textit{test suite} e concessi gentilmente dal prof Marinai.  I files erano divisi in tre cartelle: ``Icdar07'', ``Grec-03'' e ``Articoli scientifici''. Gli articoli in ciascuna cartella avevano l'elenco dei riferimenti rispettivamente: con numero tra parentesi quadre (``Icdar07''), con numero seguito da punto (``Grec-03'') e senza nessun tipo di elenco (``Articoli scientifici''). 
 \\~\\
 Per eseguire le prove ci siamo recati all'interno di un laboratorio della facoltà di Ingegneria dell'Università di Firenze, poichè con un indirizzo Ip interno dell' Università abbiamo avuto la possibilità di scaricare un numero maggiore di Pdf destinati alla ricerca, altrimenti non accessibili.
-Le prove sono state eseguite su tutti i documenti,lasciando l'applicativo ad eseguire per un pomeriggio intero. Successivamente ne è stato scelto un sottoinsieme per la valutazione dei risultati ottenuti. In particolare sono stati scelti casualmente 20 documenti dalla cartella ``Icdar07'', 20 da ``Grec-03'' e solo 2 da ``Articoli scientifici'', poichè sfortunatamente un gran numero di pdf in questa cartella non era in formato testo.
+Le prove sono state eseguite su tutti i documenti, lasciando l'applicativo ad eseguire per alcune ore. Successivamente ne è stato scelto un sottoinsieme per la valutazione dei risultati ottenuti. In particolare sono stati scelti casualmente 20 documenti dalla cartella ``Icdar07'', 20 documenti da ``Grec-03'' e solo 2 da ``Articoli scientifici'', poichè sfortunatamente un gran numero di pdf in questa cartella non era in formato testo.
 \\~\\
 Per ciascun documento sono stati valutati i seguenti parametri:
 \begin{itemize}
  \item \textbf{NO} - è il numero di riferimenti contenuti nel documento originale.
  \item \textbf{NC} - è il numero di riferimenti correttamente individuati. 
- \item \textbf{NT} - è il numero di titoli correttamente indivuato.
+ \item \textbf{NT} - è il numero di titoli correttamente indivuati.
  \item \textbf{NL} - è il numero di risorse corretemente associate ai riferimenti.
  \item \textbf{NB} - è il numero di BibTex correttamente associati ai riferimenti.
  \item \textbf{NP} - è il numero di Pdf associati ai riferimenti che si è riusciti a scaricare. 
@@ -24,9 +24,33 @@ e quindi i seguenti Indici Statistici:
 \end{itemize}
 
 \subsection{Risultati dei test}
-...\\
+
+\subsubsection{Estrazione dei Riferimenti}
+Dalla tabella 5 è evidente che si è ottenuto degli ottimi risultati nell'estrazione dei riferimenti bibliografici: in media il 94.5\% dei riferimenti presenti in un documento qualsiasi è estratto correttamente. Più nello specifico dai test da noi effettuati si evince il 92,0\% di correttezza negli articoli con indice tra parentesi quadre, il 95,2\% di correttezza negli articoli con indice puntato e il 98,0\% negli articoli senza indice. Questi risultati appaiono sorprendenti rispetto alle aspettative, poichè sembrerebbe più ragionevole pensare che più l'indice è ben definito più un algoritmo di questo tipo basato su regole si debba comportare meglio. Tutto si spiega alla luce del numero di test effettuati. In un campione di soli 20 articoli un caso pessimo pesa molto. Questo è quello che è successo nella valutazione degli articoli in Icdar, mentre non è successo per gli articoli in Grec-03. Per quanto riguarda invece gli articoli senza indice va detto che un campione di 2 articoli non è affidabile e perciò il 98\% riscontrato è un po' fuorviante. Tuttavia è evidente che più del 90\% di correttezza ottenuto è un risultato molto soddisfaciente rispetto agli obiettivi prefissati. 
+
+\subsubsection{Estrazione dei titoli}
+Dalla tabella 5 è evidente che anche in questo caso si è ottenuto degli ottimi risultati nell'estrazione dei titoli dai riferimenti correttamente individuati: in media 89,2\% di risultati corretti è un risultato decisamente soddisfaciente. Anche valutando la correttezza di estrazione dei titoli rispetto al numero di riferimenti effettivamente presenti nel documento originale, un risultato del 83,2\% è da considerarsi un buon risultato, soprattutto considerando che l'euristica per l'estrazione del titolo è piuttosto semplice e decisamente migliorabile. 
+
+\subsubsection{Collegamento del riferimento ad una risorsa Web}
+Dalla tabella 5 si evince che in questo caso si è ottenuto dei buoni risultati nel tentativo di associare una corretta risorsa Web a ciscun riferimento basandosi sul titolo correttamente estratto: una media del 70,4\% di correttazza è da considerarsi un risultato più che sufficiente. Questo risultato diventa ancora più apprezzabile considerando che non sempre esiste disponibile sul Web una risorsa direttamente associabile al riferimento estratto dall'articolo. Si ritiene importante notare che questo risultato è stato possibile grazie al supporto del servizio offerto dal WebService di Google: ''GoogleSuggest''. Questo ci ha permesso di ricostruire/correggere il titolo prima di inserlo nella query di ricerca. Se da un lato si è migliorato complessivamente la percentuale di recall rispetto ai riferimenti trovati, dall'altro si è introdotto alcuni errori dovuti alla possibile inesattezza del suggerimento. Questo problema è però trascurabile rispetto ai miglioramenti ottenuti.
+
+\subsubsection{Recupero BibTex}
+Dalla tabella 5 appare evidente che in questo caso i risultati ottenuti, come previsto, sono scarsi: è stato possibile ottenere solo il 31,7\% di BibTex relativi a titoli correttamente estratti. La percentuale è ancor meno confortante se valutata rispetto ai riferimenti complessivi contenuti nei documenti, poichè scende al 26,7\%. Tuttavia questi risultati non soddisfacienti sono imputabili a due cause principali. La prima è che non sempre la risorsa Web associata al riferimento contiene il BibTex relativo, per esempio quando si tratta di un pdf immediatamente leggibile. La seconda è che di tutte le liberie scientifiche digitali presenti sul Web che possono contenere i dati di nostro interesse, il nostro applicativo è in grado di trattarne solo tre, le più frequenti: ieeeExplorer, citeSeer e spinglerLink. Poichè il BibTex è estratto direttamente dal codice HTML è necessario che sia ben specificato come leggerlo dalla pagina che descrive il documento: anche una semplice modifica del layout della pagina di uno dei siti trattabili potrebbe mettere in difficoltà l'applicativo.
+
+\subsubsection{Recupero dei Pdf}
+Dalla tabella 5 appare evidente che in questo caso i risultati ottenuti sono appena sufficienti: è stato possibile ottenere il 53,7\% di Pdf collegati al riferimento della bibliografia. Tuttavia, questi risultati appena sufficienti, diventano più che sufficienti se si considera che: 
+\begin{enumerate}
+ \item Non sempre c'è un Pdf disponibile on-line per il riferimento interessato.
+ \item Nel caso in cui il documento si trovi in una libreria digitale non trattata dall'applicativo, questo non è in grado di scaricarlo.
+ \item Il link al documento potrebbe essere non più disponibile per un qualsiasi incognito motivo.
+\end{enumerate}
+A questo punto è opportuno specificare che nella pratica si è ritenuto scaricati correttamente anche documenti Pdf che in realtà non sono stati resi disponibili offline. Infatti spesso capita che gli articoli associati al riferimento sebbene siano presenti sul Web, non siano liberamente consultabili. Questo è il motivo che ci ha spinto ad andare ad effettuare i test all'interno dell'università, ma che non è stato del tutto risolutivo, infatti alcuni articoli che si tenta di scaricare sono accessibili solo dietro pagamento. Per questo motivo abbiamo ritenuto casi positivi anche quelli in cui il Pdf era scaricabile, ma non liberamente.
+
+
+\subsubsection{Casi limite}
 Oltre alle varie medie finali degli indici statistici reperibile in tabella \ref{tab:totale}, si va ad analizzare alcuni casi limite come ad esempio il caso pessimo e caso ottimo: questo perchè a volte ci possono essere degli articoli in cui le euristiche di pdftoref possono non venire soddisfatte, generando risultati a bassa percentuale oppure viceversa casi in cui le eurisitche e gli accorgimenti adottati per la ricerca nel web hanno portato a generare un html speculare alla pagina di riferimenti.
 \begin{description}
+
 	\item[Caso Pessimo]Ad esempio nell'articolo \textit{04378679.pdf} della tabella \ref{tab:icdar} si è stimata una percentuale di correttezza sull'estrazione delle voci del $28,6\%$ che si discosta in maniera significativa dal $94,5\%$ di media. Va da sè che questo può essere considerato il caso pessimo, vediamo come mai. Nel dettaglio su 7 voci bibliografiche effettive, sono state recuperate solamente le ultime 2. Questo perchè in tale unico esempio, è accaduto che la ricerca di tipo bottom-up della bibliografia tramite \textit{References} è risultata errata, in quanto dentro l'elenco di voci bibliografiche è contenuto nuovamente la parola \textit{References}. Ora per come si è implementata la localizzazione della bibliografia (sezione \ref{sec:ricercaref}) aiutandosi con la figura \ref{fig:bottomup}, è ovvio che se alla voce bibliografica numero sei vi è citata la parola References, l'eurista dell'applicativo tralascia tutte le altre voci sopra indicizzando solo le ultime due.\\ Per quando riguarda il caso pessimo sull'estrazione dei titoli, non è possibile portare un esempio a modello perchè come appare dai risultati l'euristica adottata sembra più stabile generando una media dell $89,2\%$, ma con una minor varianza, questo perchè ogni voce bibliografica è chiamata a rispettare regole bene precise che ovviamente l'euristica segue (l'elenco degli autori prima del titolo, separazione dei campi tramite o punti o virgole etc.): se si vuole localizzare il caso peggiore ci si potrebbe focalizzare sul file \textit{100.pdf} in tabella \ref{tab:grec}, che però non può essere considerato tale in quanto fornisce un risultato solo sulla base di due voci bibliografiche che sono poche per essere considerato come caso pessimo. Comunque anche in questo caso l'errore sull'estrazione dei titoli si riconferma quello simile al precedente, ossia in cui il delimitatore virgola o punto è ripetuto all'intero del titolo, così che il titolo: \textit{``Interactive Electronic Technical: General Content, Style, Format, and User-Interaction Requirements''} venga estratto come \textit{``Interactive Electronic Technical: General Content''}\\ Quindi in sintesi i casi pessimi hanno portato alla luce che per quando riguarda la precisione sull'estrazione si ha un valore più alto di media, ma a volte con picchi bassi di percentuale, data anche la natura più variabile dei \textit{template} per le bibliografie; viceversa l'euristica per l'estrazione dei titoli ha una precisione leggermente più bassa, ma manifesta maggior robustezza tramite le percentuali più o meno allineate.
 	\item[Caso Ottimo] bla
 \end{description}
@@ -99,7 +123,8 @@ Totale & 273 & 261 & 228 & 153 & 73 & 112 & ~ & 95,2\% & 84,4\% & 66,8\% & 27,8\
 Nome File & NO & NC & NT & NL & NB & NP & ~ & NC/NO & NT/NC & NL/NT & NB/NT & NP/NT \\ \hline
 thrun98 & 35 & 34 & 25 & 21 & 14 & 18 & ~ & 97,1\% & 73,5\% & 84,0\% & 56,0\% & 72,0\%\\
 1.pdf & 16 & 16 & 16 & 13 & 6 & 5 & ~ & 100,0\% & 100,0\% & 81,3\% & 37,5\% & 31,3\%\\ \hline
-Totale & 51 & 50 & 41 & 34 & 20 & 23 & ~ & 98,6\% & 86,8\% & 82,6\% & 46,8\% & 51,6\%\\ \hline	\end{tabular}
+Totale & 51 & 50 & 41 & 34 & 20 & 23 & ~ & 98,6\% & 86,8\% & 82,6\% & 46,8\% & 51,6\%\\ \hline
+	\end{tabular}
 	\tiny{\caption{Risultati ottenuti nell'esecuzione di pdftoref su parte dei pdf presi da \textbf{articoli senza nessun template} per l'elencare le voci bibliografiche.}}
 	\end{center}
 	\end{table}
@@ -112,7 +137,8 @@ Totale & 51 & 50 & 41 & 34 & 20 & 23 & ~ & 98,6\% & 86,8\% & 82,6\% & 46,8\% & 5
 	Grec & 273 & 261 & 228 & 153 & 73 & 112 & ~ & 95,2\% & 84,4\% & 66,8\% & 27,8\% & 48,1\%\\
 	Varie & 51 & 50 & 41 & 34 & 20 & 23 & ~ & 98,6\% & 86,8\% & 82,6\% & 46,8\% & 51,6\%\\ \hline
 	Media Totale & 566 &	535	 & 477 &	336 &	151 & 	255 & ~ & 94,5\% & 89,2\% &	70,4\% & 31,7\% & 53,7\% \\ \hline
-	\end{tabular}
+
+	\end{tabular}
 	\tiny{\caption{Risultati totali per ogni cartella e tipologia e nell'ultimo rigo le media con i valori finali}}
 	\end{center}
 	\end{table}
