@@ -61,7 +61,7 @@ In particolare PDFMiner offre un interfaccia python direttamente integrabile con
 
 
 
-\subsection{Ricerca References}
+\subsection{Ricerca References}\label{sec:ricercaref}
 
 Ottenuto il file XML è necessario operare una ricerca per selezionare il testo relativo alla bibliografia.
 Per fare ciò ci siamo basati sui seguenti criteri:
@@ -71,7 +71,7 @@ Per fare ciò ci siamo basati sui seguenti criteri:
 \end{itemize}
 
 Perciò abbiamo operato una ricerca dal fondo del documento (\textit{bottom-up}) come in Figura \ref{fig:bottomup} al fine di trovare la prima occorrenza della parola \textit{``Reference''} alla quale abbiamo supposto seguire soltanto il testo relativo alla bibliografia. 
-Un problema pratico che si è affrontato qui è dovuto all'estrazione del testo dal pdf. La parola ``References'' infatti non è sempre estratta in modo coerente a causa delle problematiche nell'analisi del testo del formato di stampa PDF citate precedentemente. Infatti potrebbe presentarsi come ``Re fe rence'' o ``R e ference'', insomma con degli spazi all'interno. Per ovviare a ciò ci siamo avvalsi delle\textbf{ espressioni regolari} in python, uno strumento molto efficacie per la manipolazione e l'analisi del testo.
+Un problema pratico che si è affrontato qui è dovuto all'estrazione del testo dal pdf. La parola ''References'' infatti'' non è sempre estratta in modo coerente a causa delle problematiche nell'analisi del testo del formato di stampa PDF citate precedentemente. Infatti potrebbe presentarsi come ''Re fe rence'' o ``R e ference'', insomma con degli spazi all'interno. Per ovviare a ciò ci siamo avvalsi delle\textbf{ espressioni regolari} in python, uno strumento molto efficacie per la manipolazione e l'analisi del testo.
 
 \begin{figure}[htb]
 \begin{center}
@@ -132,7 +132,7 @@ Nel caso dell'enumerazione puntata andiamo a ricercare un numero seguito da un p
 Nel caso in cui non ci sia nessun tipo di indice confidiamo sul fatto che le varie entries siano separate da un accapo e da un'eventuale interlinea. Sfruttando le informazioni sulla formattazione offerte dal documento XML ottenuto ricerchiamo la sequenza ordinata [ \textit{``.''} ; \textit{``accapo''} ; \textit{``lettera maiscuola''}] per identificare la separazione tra voci bibliografiche diverse. In testa a ciascuna voce inseriamo un indice tra parentesi quadre. \'E bene sottolineare che in questo caso la ricerca del pattern è fatta solo tramite l'attributo ``bbox'' del tag xml ``text'' valutando una differenza non crescente della posizione orizzontale X di due rettangoli consecutivi che contengono il testo. In questo modo è possibile determinare se vi è un accapo, poichè una differenza negativa nella componente X del BBox in cui è inscritto il testo indica il passaggio dalla riga \textit{i-1 esima} alla \textit{riga i esima}. Un esempio può essere visualizzato di seguito:
 
 
-\begin{lstlisting}[language=XML,frame=r,caption=Esempio di XML in cui si nota l'accapo tra References e la prima voce ,breaklines=true,basicstyle=\small]{Localizzazione dell'accapo}
+\begin{lstlisting}[language=XML,frame=r,caption=\textit{Esempio di XML in cui si nota l'accapo tra References e la prima voce} ,breaklines=true,basicstyle=\small]{Localizzazione dell'accapo}
 ...
 <text direction="1" bbox="134.765, 361.365,  62.920, 11.955" size="11.955">References</text>
 <text direction="1" bbox="139.372, 340.543, 341.146,  8.966" size="8.966">1. J.-F. Arias, C.P. Lai, S. Surya, R. Kasturi, and A.K. Chhabra. Interpretation of</text>
@@ -195,13 +195,13 @@ Un esempio pratico è dato di seguito:\\
 	9 & \begin{scriptsize}Modified quadratic discriminant functions and the  application to Chinese character recognition\end{scriptsize} & \textbf{97} & 12 \\ \hline
 \end{tabular}
 
-\tiny{\caption{Rappresentazione dei confronti che pdftoref esegue per estrarre il titolo a maggior distacco dalla media.\'E importante dire che i valori successivi della voce non sono riportati in quanto si prende sempre il primo valore che verifica l'euristica, interrompendo subito il \textit{loop}.}}
+\tiny{\caption{\textit{Rappresentazione dei confronti che pdftoref esegue per estrarre il titolo a maggior distacco dalla media.\'E importante dire che i valori successivi della voce non sono riportati in quanto si prende sempre il primo valore che verifica l'euristica, interrompendo subito il loop.}}}
 
 \label{label}
 \end{center}
 \end{table}
 
-Dalla tabella \ref{tab:title} si evince che ovviamente il titolo risulta quel $x_i$ tale che $ \frac{|x_i|}{ \frac{\sum_i |x_i|}{n}} \gg 1 $ cioè:
+Dalla tabella 1 si evince che ovviamente il titolo risulta quel $x_i$ tale che $ \frac{|x_i|}{ \frac{\sum_i |x_i|}{n}} \gg 1 $ cioè:
 \\ $ x_9= $ \textit{Modified quadratic discriminant functions and the application to Chinese character recognition} - che porta al confronto $97/12 \gg 1$. -
 \\~\\
 %Un problema è stimare la giusta soglia per giudicare la differenza sufficiente. Un'indagine statistica ci ha aiutato nel trovare una stima appropriata.
@@ -243,11 +243,11 @@ Data la possibilità di usufruire del WebService di Google per la ricerca di con
 \\
 \'E bene sottolineare che non è stato possibile utilizzare \textit{Google Scholar} perchè ancora non offre un'interfaccia  tramite WebService.
 \\
-Il codice che realizza questa procedura ovviamente svolge la comunicazione tramite richieste SOAP-XML, per questo motivo in prima instanza può sembrare che la complessità nel gestire XML sia la stessa che parsare HTML grezzo. In realtà la procedura per gestione del protocollo SOAP e la scrittura/lettura degli envolope è molto più agile del complesso meccanismo sottostante, in quanto stata utilizzata un'implementazione del client WebService di tipo Proxy usando le librerie Python SoapPy. Per mezzo di esse si delega ad oggetti Proxy la gestione del protocollo e quindi dell'XML, ottenendo una rappresentazione in locale del metodo dal WebService. Tutto questo è esaurientemente descritto in \cite{ibm-py-ws}.
+Il codice che realizza questa procedura ovviamente svolge la comunicazione tramite richieste SOAP-XML, per questo motivo in prima instanza può sembrare che la complessità nel gestire XML sia la stessa che parsare HTML grezzo. In realtà la procedura per la gestione del protocollo SOAP e la scrittura/lettura degli envolope è molto più agile del complesso meccanismo sottostante, poichè è stata utilizzata un'implementazione del client WebService di tipo Proxy usando le librerie Python SoapPy. Per mezzo di esse si delega ad oggetti Proxy la gestione del protocollo e quindi dell'XML, ottenendo una rappresentazione in locale del metodo dal WebService. Tutto questo è esaurientemente descritto in \cite{ibm-py-ws}.
 \\
 Di seguito è presentato in sintesi il codice che realizza quanto suddetto:
 
-\begin{lstlisting}[language=Python,frame=r,caption=Codice relativo al dialogo con il GWS ,breaklines=true,basicstyle=\scriptsize]{Codice relativo al dialogo con il GWS}
+\begin{lstlisting}[language=Python,frame=r,caption=\textit{Codice relativo al dialogo con il GWS} ,breaklines=true,basicstyle=\scriptsize]{Codice relativo al dialogo con il GWS}
 def googleSearch(title):
     '''
     It is the function of the application that make the request at google WS using SoapPY getting the first url of response.    
@@ -283,6 +283,6 @@ def googleSearch(title):
 
 
 \subsubsection{Problematiche Recupero Bibtex e PDF}
-Le modalità di recupero Bitex e PDF sono strettamente legate alla sorgente dell'informazione. \'E impossibile astrarre un caso generale. Per questo motivo è stato utile classificare le sorgenti migliori e più frequenti, per implementare dei metodi ad hoc. Nel caso in cui il il WebService di google risponda direttamente col collegamento al PDF dell'articolo, non è possibile prelevare info aggiutive, sebbene sia possibile scaricare l'intero file.
-Quando invece si ottiene il collegamento ad una pagina di descrizione dell'articolo che contiene il riferimento al file, è possibile ottere informazioni più dettagliate. Per estrarre queste informazioni è necessario però eseguire il parsing della singola pagina tenendo conto del template della sorgente,come ad esempio: Citeseer, Ieee, portal.acm, springerlink. 
-Per ottenere la quasi totalità delle informazioni che ci siamo prefissati sarebbe sufficiente trattare queste quattro sorgenti, ma purtroppo nella pratica non è possibile raggiungere questo risultato eccellente. Se per l'ottenimento del bibtex i risultati sono comunque buoni, questo non vale per il dowload del documento completo: gran parte degli archivi di articoli sul web, o offrono i documenti dietro compenso pecuniario, o impongono delle restizioni sul numero di richieste effettuabili da uno stesso IP in un certo intervallo di tempo, oppure non posseggono proprio il documento.
+Le modalità di recupero Bitex e PDF sono strettamente legate alla sorgente dell'informazione. \'E impossibile astrarre un caso generale. Per questo motivo è stato utile classificare le sorgenti migliori e più frequenti, per implementare dei metodi ad hoc. Nel caso in cui il il WebService di google risponda direttamente col collegamento al PDF dell'articolo, non è possibile prelevare informazioni aggiutive, sebbene sia possibile scaricare l'intero file.
+Quando invece si ottiene il collegamento ad una pagina di descrizione dell'articolo che contiene il riferimento al file, è possibile ottenere informazioni più dettagliate. Per estrarre queste informazioni è necessario però eseguire il parsing della singola pagina tenendo conto del template della sorgente,come ad esempio: CiteSeer, IEEExplore, Portal.ACM, Springerlink. 
+Per ottenere la quasi totalità delle informazioni che ci siamo prefissati sarebbe sufficiente trattare queste quattro sorgenti, ma purtroppo nella pratica non è possibile raggiungere questo risultato eccellente. Sebbene sia per l'ottenimento del bibtex che per il download del documento completo i risultati ottenuti siano quasi sufficienti è necessario sottolineare che: gran parte degli archivi di articoli sul web, o offrono i documenti dietro compenso pecuniario, o impongono delle restizioni sul numero di richieste effettuabili da uno stesso IP in un certo intervallo di tempo, oppure non posseggono proprio il documento.
